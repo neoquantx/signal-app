@@ -1,6 +1,5 @@
 import NextAuth from "next-auth"
 import GitHub from "next-auth/providers/github"
-import { putItem, getItem } from "./dynamo"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
@@ -13,28 +12,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, profile }) {
       if (profile) {
-        const userId = String((profile as { id?: number }).id)
-        token.sub = userId
+        token.sub = String((profile as { id?: number }).id)
         token.username = (profile as { login?: string }).login
-        try {
-          const existing = await getItem(`USER#${userId}`, "PROFILE")
-          if (!existing) {
-            await putItem({
-              PK: `USER#${userId}`,
-              SK: "PROFILE",
-              id: userId,
-              name: token.name ?? "Anonymous",
-              email: token.email ?? "",
-              image: token.picture ?? "",
-              username: token.username ?? "",
-              humanScore: 100,
-              topicIds: [],
-              createdAt: new Date().toISOString(),
-            })
-          }
-        } catch (err) {
-          console.error("DB error saving user:", err)
-        }
       }
       return token
     },
