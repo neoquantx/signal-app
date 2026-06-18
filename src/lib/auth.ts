@@ -3,6 +3,7 @@ import GitHub from "next-auth/providers/github"
 import { putItem, getItem } from "./dynamo"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   providers: [
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID!,
