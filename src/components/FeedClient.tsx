@@ -8,6 +8,7 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    fetch("/api/users/sync", { method: "POST" }).catch(() => {})
     fetch("/api/posts")
       .then(r => r.json())
       .then(d => { setPosts(d.posts ?? []); setLoading(false) })
