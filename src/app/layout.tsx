@@ -1,19 +1,30 @@
-import type { Metadata } from "next"
-import { Geist } from "next/font/google"
+import type { Metadata, Viewport } from "next"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import SessionProvider from "@/components/SessionProvider"
 
-const geist = Geist({ subsets: ["latin"] })
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "Signal — Trust-native social",
-  description: "Social media built on trust, not attention",
+  description:
+    "A social feed built on trust, not attention. Every post shows a Human Authenticity Score and a transparent reason for why you see it.",
+}
+
+export const viewport: Viewport = {
+  themeColor: "#2563eb",
+  width: "device-width",
+  initialScale: 1,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${geist.className} bg-gray-50 text-gray-900 antialiased`}>
+    <html lang="en" className={`${inter.variable} bg-background`}>
+      <body className="font-sans bg-background text-foreground antialiased">
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>

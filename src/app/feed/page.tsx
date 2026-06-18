@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import Navbar from "@/components/Navbar"
+import Sidebar from "@/components/Sidebar"
 import FeedClient from "@/components/FeedClient"
 import AlgoPanel from "@/components/AlgoPanel"
 
@@ -10,22 +10,20 @@ export default async function FeedPage() {
   const userId = (session.user as { id?: string }).id ?? ""
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <main className="max-w-5xl mx-auto pt-20 px-4 pb-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="text-lg font-medium text-gray-900">Your feed</h1>
-              <span className="text-xs text-gray-400">Ranked by trust · human-verified</span>
-            </div>
-            <FeedClient currentUserId={userId} />
-          </div>
-          <div className="lg:col-span-1">
-            <AlgoPanel />
-          </div>
-        </div>
+    <div className="mx-auto flex min-h-screen w-full max-w-[1200px] gap-0 lg:gap-8">
+      <Sidebar />
+
+      {/* Center column */}
+      <main className="min-w-0 flex-1 px-4 py-6 lg:max-w-[600px] lg:px-0 lg:py-8">
+        <FeedClient currentUserId={userId} />
       </main>
+
+      {/* Right sidebar */}
+      <aside className="hidden w-[280px] shrink-0 py-8 xl:block">
+        <div className="sticky top-8">
+          <AlgoPanel />
+        </div>
+      </aside>
     </div>
   )
 }
