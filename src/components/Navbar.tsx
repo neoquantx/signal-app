@@ -6,14 +6,13 @@ import { usePathname } from "next/navigation"
 export default function Navbar() {
   const { data: session } = useSession()
   const pathname = usePathname()
-
   const isFeedActive = pathname === "/feed"
   const isExploreActive = pathname === "/explore"
+  const isDiscoverActive = pathname === "/discover"
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-slate-100 h-16 flex items-center px-6 transition-all duration-300">
       <div className="flex items-center gap-2.5 flex-1">
-        {/* Stylized Signal Wave SVG Logo */}
         <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-50">
           <svg className="w-5 h-5 text-[#2563EB]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 20A16 16 0 0 1 20 4" />
@@ -28,9 +27,7 @@ export default function Navbar() {
         <Link
           href="/feed"
           className={`text-sm transition-colors duration-200 ${
-            isFeedActive
-              ? "text-blue-600 font-medium"
-              : "text-slate-600 hover:text-slate-900"
+            isFeedActive ? "text-blue-600 font-medium" : "text-slate-600 hover:text-slate-900"
           }`}
         >
           Feed
@@ -38,12 +35,18 @@ export default function Navbar() {
         <Link
           href="/explore"
           className={`text-sm transition-colors duration-200 ${
-            isExploreActive
-              ? "text-blue-600 font-medium"
-              : "text-slate-600 hover:text-slate-900"
+            isExploreActive ? "text-blue-600 font-medium" : "text-slate-600 hover:text-slate-900"
           }`}
         >
           Explore
+        </Link>
+        <Link
+          href="/discover"
+          className={`text-sm transition-colors duration-200 ${
+            isDiscoverActive ? "text-blue-600 font-medium" : "text-slate-600 hover:text-slate-900"
+          }`}
+        >
+          Discover
         </Link>
         <Link
           href="/compose"
