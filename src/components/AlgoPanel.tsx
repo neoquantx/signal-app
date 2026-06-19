@@ -38,97 +38,132 @@ export default function AlgoPanel() {
   const total = prefs.trustChainWeight + prefs.topicRelevanceWeight + prefs.recencyWeight
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-20">
-      <div className="flex items-center gap-2 mb-1">
-        <div className="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center">
-          <div className="w-1.5 h-1.5 bg-white rounded-full" />
+    <div className="bg-white rounded-3xl border border-[#E2E8F0] overflow-hidden shadow-sm shadow-slate-100/40 sticky top-24">
+      {/* Gradient Header */}
+      <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-5 h-5 rounded-lg bg-blue-500/30 flex items-center justify-center border border-white/10">
+            <svg className="w-3.5 h-3.5 text-blue-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+            </svg>
+          </div>
+          <h2 className="text-sm font-semibold tracking-tight">Your algorithm</h2>
         </div>
-        <h2 className="text-sm font-medium text-gray-900">Your algorithm</h2>
-      </div>
-      <p className="text-xs text-gray-400 mb-5">100% transparent. Yours to control.</p>
-
-      <div className="space-y-5">
-        <SliderRow
-          label="Trust chain weight"
-          value={prefs.trustChainWeight}
-          onChange={v => handleChange("trustChainWeight", v)}
-          color="bg-blue-500"
-        />
-        <SliderRow
-          label="Topic relevance"
-          value={prefs.topicRelevanceWeight}
-          onChange={v => handleChange("topicRelevanceWeight", v)}
-          color="bg-purple-500"
-        />
-        <SliderRow
-          label="Recency"
-          value={prefs.recencyWeight}
-          onChange={v => handleChange("recencyWeight", v)}
-          color="bg-green-500"
-        />
+        <p className="text-xs text-blue-100/80 font-normal">100% transparent. Yours to control.</p>
       </div>
 
-      {total !== 100 && (
-        <p className="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mt-4">
-          Weights add up to {total}% — adjust to reach 100%
-        </p>
-      )}
-
-      <button
-        onClick={handleSave}
-        disabled={saving || total !== 100}
-        className="w-full mt-4 bg-blue-600 text-white text-xs py-2 rounded-xl hover:bg-blue-700 disabled:opacity-40 transition-all"
-      >
-        {saving ? "Saving..." : saved ? "✓ Saved" : "Save algorithm"}
-      </button>
-
-      <div className="mt-5 pt-5 border-t border-gray-100">
-        <p className="text-xs font-medium text-gray-500 mb-3">Algorithm promise</p>
-        <div className="space-y-2">
-          {["No ads, ever", "No paid amplification", "No rage-bait signals", "No hidden ranking"].map(p => (
-            <div key={p} className="flex items-center gap-2 text-xs text-gray-500">
-              <span className="text-green-500">✓</span> {p}
-            </div>
-          ))}
+      <div className="p-5">
+        <div className="space-y-5">
+          <SliderRow
+            label="Trust chain weight"
+            value={prefs.trustChainWeight}
+            onChange={v => handleChange("trustChainWeight", v)}
+            accentColor="accent-[#2563EB]"
+            trackColor="bg-[#2563EB]"
+          />
+          <SliderRow
+            label="Topic relevance"
+            value={prefs.topicRelevanceWeight}
+            onChange={v => handleChange("topicRelevanceWeight", v)}
+            accentColor="accent-[#8B5CF6]"
+            trackColor="bg-[#8B5CF6]"
+          />
+          <SliderRow
+            label="Recency"
+            value={prefs.recencyWeight}
+            onChange={v => handleChange("recencyWeight", v)}
+            accentColor="accent-[#10B981]"
+            trackColor="bg-[#10B981]"
+          />
         </div>
-      </div>
 
-      <div className="mt-5 pt-5 border-t border-gray-100">
-        <p className="text-xs font-medium text-gray-500 mb-3">Feed health this week</p>
-        <HealthBar label="Human content" value={94} color="bg-blue-500" />
-        <HealthBar label="Topic diversity" value={72} color="bg-purple-500" />
-        <HealthBar label="New voices" value={31} color="bg-orange-400" />
+        {total !== 100 && (
+          <p className="text-xs text-amber-700 bg-[#FFFBEB] border border-amber-200/50 rounded-xl px-3 py-2.5 mt-4 font-medium animate-fadeIn">
+            Weights add up to {total}% — adjust to reach 100%
+          </p>
+        )}
+
+        <button
+          onClick={handleSave}
+          disabled={saving || total !== 100}
+          className="w-full mt-5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs py-2.5 rounded-xl font-semibold disabled:opacity-40 transition-all cursor-pointer shadow-sm hover:shadow active:scale-[0.98]"
+        >
+          {saving ? "Saving..." : saved ? "✓ Saved" : "Save algorithm"}
+        </button>
+
+        {/* Algorithm Promise Section */}
+        <div className="mt-5 pt-5 border-t border-[#F1F5F9]">
+          <p className="text-xs font-bold text-[#475569] mb-3">Algorithm promise</p>
+          <div className="space-y-2.5">
+            {["No ads, ever", "No paid amplification", "No rage-bait signals", "No hidden ranking"].map(p => (
+              <div key={p} className="flex items-center gap-2 text-xs text-[#475569]">
+                <div className="w-4.5 h-4.5 rounded-full bg-[#F0FDF4] flex items-center justify-center flex-shrink-0 border border-[#16A34A]/10">
+                  <svg className="w-2.5 h-2.5 text-[#16A34A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span className="font-medium">{p}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Feed Health Section */}
+        <div className="mt-5 pt-5 border-t border-[#F1F5F9]">
+          <p className="text-xs font-bold text-[#475569] mb-3">Feed health this week</p>
+          <HealthBar label="Human content" value={94} color="bg-[#2563EB]" trend="up" />
+          <HealthBar label="Topic diversity" value={72} color="bg-[#8B5CF6]" trend="up" />
+          <HealthBar label="New voices" value={31} color="bg-[#F59E0B]" trend="down" />
+        </div>
       </div>
     </div>
   )
 }
 
-function SliderRow({ label, value, onChange, color }: {
-  label: string; value: number; onChange: (v: number) => void; color: string
+function SliderRow({ label, value, onChange, accentColor, trackColor }: {
+  label: string; value: number; onChange: (v: number) => void; accentColor: string; trackColor: string
 }) {
   return (
     <div>
       <div className="flex justify-between mb-1.5">
-        <span className="text-xs text-gray-600">{label}</span>
-        <span className="text-xs font-medium text-gray-900">{value}%</span>
+        <span className="text-xs font-semibold text-[#475569]">{label}</span>
+        <span className="text-xs font-bold text-[#0F172A]">{value}%</span>
       </div>
       <input
         type="range" min={0} max={100} value={value}
         onChange={e => onChange(Number(e.target.value))}
-        className="w-full h-1 rounded-full appearance-none cursor-pointer accent-blue-600"
+        className={`w-full h-1.5 rounded-full appearance-none cursor-pointer ${accentColor} bg-[#F1F5F9] focus:outline-none`}
       />
+      {/* Animated visual progress bar */}
+      <div className="mt-2 h-1 bg-[#F1F5F9] rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all duration-300 ease-out ${trackColor}`}
+          style={{ width: `${value}%` }}
+        />
+      </div>
     </div>
   )
 }
 
-function HealthBar({ label, value, color }: { label: string; value: number; color: string }) {
+function HealthBar({ label, value, color, trend }: { label: string; value: number; color: string; trend: "up" | "down" }) {
   return (
-    <div className="flex items-center gap-2 mb-2">
-      <span className="text-xs text-gray-400 w-24 flex-shrink-0">{label}</span>
-      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-        <div className={`h-full rounded-full ${color}`} style={{ width: `${value}%` }} />
+    <div className="flex items-center gap-2 mb-2.5">
+      <span className="text-xs font-medium text-[#475569] w-24 flex-shrink-0">{label}</span>
+      <div className="flex-1 h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
+        <div className={`h-full rounded-full transition-all duration-500 ${color}`} style={{ width: `${value}%` }} />
       </div>
-      <span className="text-xs text-gray-500 w-8 text-right">{value}%</span>
+      <div className="flex items-center gap-1 w-12 justify-end flex-shrink-0">
+        <span className="text-xs font-bold text-[#0F172A]">{value}%</span>
+        {trend === "up" ? (
+          <span className="text-[#16A34A] text-xs font-black flex items-center justify-center w-3.5 h-3.5 rounded bg-[#F0FDF4] border border-[#16A34A]/10" title="Trending up">
+            ↑
+          </span>
+        ) : (
+          <span className="text-[#DC2626] text-xs font-black flex items-center justify-center w-3.5 h-3.5 rounded bg-[#FEF2F2] border border-[#DC2626]/10" title="Trending down">
+            ↓
+          </span>
+        )}
+      </div>
     </div>
   )
 }
