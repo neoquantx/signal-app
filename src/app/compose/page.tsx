@@ -72,55 +72,157 @@ export default function ComposePage() {
     }
   }
 
-  const scoreColor = humanScore >= 90 ? "text-green-600" : humanScore >= 70 ? "text-yellow-600" : "text-red-500"
-  const scoreBg = humanScore >= 90 ? "bg-green-50 border-green-200" : humanScore >= 70 ? "bg-yellow-50 border-yellow-200" : "bg-red-50 border-red-200"
+  const scoreColor = humanScore >= 90
+    ? "text-[#16A34A]"
+    : humanScore >= 70
+    ? "text-[#B45309]"
+    : "text-[#DC2626]"
+
+  const scoreBg = humanScore >= 90
+    ? "bg-[#F0FDF4] border-[#16A34A]/25"
+    : humanScore >= 70
+    ? "bg-[#FFFBEB] border-[#B45309]/25"
+    : "bg-[#FEF2F2] border-[#DC2626]/25"
+
+  const dotColor = humanScore >= 90
+    ? "bg-[#16A34A]"
+    : humanScore >= 70
+    ? "bg-[#B45309]"
+    : "bg-[#DC2626]"
+
+  // SVG Circular progress properties
+  const maxLength = 500
+  const characterCount = content.length
+  const percentage = Math.min(100, (characterCount / maxLength) * 100)
+  const radius = 16
+  const strokeWidth = 3.5
+  const circumference = 2 * Math.PI * radius
+  const strokeDashoffset = circumference - (percentage / 100) * circumference
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F8FAFC]">
       <Navbar />
-      <main className="max-w-xl mx-auto pt-20 px-4">
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 mt-6">
-          <div className="flex items-center gap-3 mb-4">
-            {session?.user?.image && (
-              <img src={session.user.image} className="w-9 h-9 rounded-full" alt="avatar" />
+      <main className="max-w-xl mx-auto pt-24 px-4 pb-16 animate-fade-in">
+        <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 mt-6 shadow-sm shadow-slate-100/40">
+          
+          {/* User profile section */}
+          <div className="flex items-center gap-3 mb-5">
+            {session?.user?.image ? (
+              <img src={session.user.image} className="w-10 h-10 rounded-full border border-slate-100 shadow-sm" alt="avatar" />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 text-[#2563EB] flex items-center justify-center font-bold text-sm">
+                {session?.user?.name?.charAt(0) ?? "U"}
+              </div>
             )}
             <div>
-              <p className="text-sm font-medium text-gray-900">{session?.user?.name}</p>
-              <select
-                value={topicId}
-                onChange={e => setTopicId(e.target.value)}
-                className="text-xs text-blue-600 bg-transparent border-none outline-none cursor-pointer"
-              >
-                {DEFAULT_TOPICS.map(t => (
-                  <option key={t.id} value={t.id}>Posting on {t.name}</option>
-                ))}
-              </select>
+              <p className="text-sm font-semibold text-[#0F172A]">{session?.user?.name}</p>
+              <p className="text-xs text-slate-400">Drafting verified broadcast</p>
             </div>
           </div>
+
+          {/* Horizontal Chips Topic Selector */}
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-[#475569] mb-2.5">Topic area</p>
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+              {DEFAULT_TOPICS.map(t => {
+                const isSelected = topicId === t.id
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setTopicId(t.id)}
+                    className={`text-xs px-3.5 py-2 rounded-full border transition-all duration-200 whitespace-nowrap cursor-pointer ${
+                      isSelected
+                        ? "bg-[#EFF6FF] border-[#2563EB] text-[#2563EB] font-semibold shadow-sm"
+                        : "bg-white border-[#E2E8F0] text-[#475569] hover:border-[#2563EB]/40 hover:text-[#2563EB]"
+                    }`}
+                  >
+                    {t.name}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Large text block: min-h-[200px] */}
           <textarea
             value={content}
             onChange={handleChange}
             onPaste={handlePaste}
             placeholder="What do you know that others should trust?"
-            className="w-full text-gray-900 text-sm resize-none outline-none placeholder-gray-400 min-h-[120px]"
-            maxLength={500}
+            className="w-full text-[#0F172A] text-sm resize-none outline-none placeholder-slate-400 min-h-[200px] bg-white border border-[#F1F5F9] rounded-2xl p-4 focus:border-[#2563EB]/40 transition-colors duration-200"
+            maxLength={maxLength}
           />
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-            <div className={`flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border ${scoreBg}`}>
-              <div className={`w-1.5 h-1.5 rounded-full ${humanScore >= 90 ? "bg-green-500" : humanScore >= 70 ? "bg-yellow-500" : "bg-red-500"}`} />
-              <span className={scoreColor}>{humanScore}% human confidence</span>
+
+          {/* Indicators Footer */}
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#F1F5F9]">
+            {/* Smoothly animated human score badge */}
+            <div className={`flex items-center gap-2 text-xs px-3.5 py-2 rounded-full border transition-all duration-500 ease-in-out ${scoreBg}`}>
+              <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 ${dotColor}`} />
+              <span className={`font-semibold transition-colors duration-500 ${scoreColor}`}>
+                {humanScore}% human confidence
+              </span>
             </div>
+
             <div className="flex items-center gap-3">
-              <span className="text-xs text-gray-400">{content.length}/500</span>
-              <button
-                onClick={handleSubmit}
-                disabled={!content.trim() || submitting}
-                className="bg-blue-600 text-white text-sm px-5 py-2 rounded-full hover:bg-blue-700 disabled:opacity-40 transition-colors"
-              >
-                {submitting ? "Posting..." : "Post"}
-              </button>
+              {/* Circular Character Count Progress Indicator */}
+              <div className="relative flex items-center justify-center w-9 h-9">
+                <svg className="w-9 h-9 transform -rotate-90">
+                  <circle
+                    cx="18"
+                    cy="18"
+                    r={radius}
+                    className="stroke-[#F1F5F9]"
+                    strokeWidth={strokeWidth}
+                    fill="transparent"
+                  />
+                  <circle
+                    cx="18"
+                    cy="18"
+                    r={radius}
+                    className={`transition-all duration-300 ${
+                      characterCount >= 470
+                        ? "stroke-[#DC2626]"
+                        : characterCount >= 400
+                        ? "stroke-[#B45309]"
+                        : "stroke-[#2563EB]"
+                    }`}
+                    strokeWidth={strokeWidth}
+                    fill="transparent"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={strokeDashoffset}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span className="absolute text-[9px] font-bold text-[#475569]">
+                  {maxLength - characterCount}
+                </span>
+              </div>
             </div>
           </div>
+
+          {/* Full-width Submit button when content exists */}
+          {content.trim() && (
+            <div className="mt-4 pt-4 border-t border-[#F1F5F9] animate-fade-in">
+              <button
+                onClick={handleSubmit}
+                disabled={submitting}
+                className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm py-3 rounded-xl font-semibold shadow-md shadow-blue-500/15 hover:shadow-lg transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {submitting ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Publishing...
+                  </>
+                ) : (
+                  "Share with your trust network"
+                )}
+              </button>
+            </div>
+          )}
         </div>
       </main>
     </div>
