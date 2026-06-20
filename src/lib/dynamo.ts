@@ -9,7 +9,9 @@ const client = new DynamoDBClient({
   },
 })
 
-export const db = DynamoDBDocumentClient.from(client)
+export const db = DynamoDBDocumentClient.from(client, {
+  marshallOptions: { removeUndefinedValues: true },
+})
 export const TABLE = process.env.DYNAMODB_TABLE_NAME!
 
 export async function putItem(item: Record<string, unknown>) {

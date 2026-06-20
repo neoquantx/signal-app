@@ -33,6 +33,45 @@ export interface DiscoverPost {
   externalUrl: string
 }
 
+let cachedToken: { accessJwt: string; expiresAt: number } | null = null
+
+async function getBlueskySession(): Promise<string | null> {
+  if (cachedToken && cachedToken.expiresAt > Date.now()) {
+    return cachedToken.accessJwt
+  }
+
+  const identifier = process.env.BLUESKY_IDENTIFIER
+  const password = process.env.BLUESKY_APP_PASSWORD
+
+  if (!identifier || !password) {
+    console.error("Missing Bluesky credentials in environment variables")
+    return null
+  }
+
+  try {
+    const res = await fetch("https://bsky.social/xrpc/com.atproto.server.createSession", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier, password }),
+    })
+
+    if (!res.ok) {
+      console.error("Bluesky login failed with status:", res.status)
+      return null
+    }
+
+    const data = await res.json()
+    cachedToken = {
+      accessJwt: data.accessJwt,
+      expiresAt: Date.now() + 1000 * 60 * 50,
+    }
+    return cachedToken.accessJwt
+  } catch (err) {
+    console.error("Bluesky login error:", err)
+    return null
+  }
+}
+
 function computeContentHeuristicScore(post: BlueskyPost): number {
   let score = 90
   const text = post.record.text || ""
@@ -63,40 +102,46 @@ export async function searchBlueskyPosts(
   topicName: string,
   limit = 12
 ): Promise<DiscoverPost[]> {
-  const url = `https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=${encodeURIComponent(query)}&limit=${limit}&lang=en`
+  const token = await getBlueskySession()
+  if (!token) return []
 
-  const res = await fetch(url, {
-    cache: "no-store",
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
-      "Accept": "application/json",
-      "Origin": "https://bsky.app",
-      "Referer": "https://bsky.app/",
-    },
-  })
+  const url = `https://bsky.social/xrpc/app.bsky.feed.searchPosts?q=${encodeURIComponent(query)}&limit=${limit}&lang=en`
 
-  if (!res.ok) {
-    console.error("Bluesky API returned status:", res.status)
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json",
+      },
+    })
+
+    if (!res.ok) {
+      console.error("Bluesky search returned status:", res.status)
+      return []
+    }
+
+    const data = await res.json()
+    const posts: BlueskyPost[] = data.posts ?? []
+
+    return posts.map(p => ({
+      id: p.cid,
+      source: "bluesky" as const,
+      authorName: p.author.displayName || p.author.handle,
+      authorHandle: p.author.handle,
+      authorImage: p.author.avatar || "",
+      content: p.record.text,
+      topicId,
+      topicName,
+      humanScore: computeContentHeuristicScore(p),
+      likeCount: p.likeCount ?? 0,
+      repostCount: p.repostCount ?? 0,
+      replyCount: p.replyCount ?? 0,
+      createdAt: p.record.createdAt,
+      externalUrl: `https://bsky.app/profile/${p.author.handle}/post/${p.uri.split("/").pop()}`,
+    }))
+  } catch (err) {
+    console.error("Bluesky search error:", err)
     return []
   }
-
-  const data = await res.json()
-  const posts: BlueskyPost[] = data.posts ?? []
-
-  return posts.map(p => ({
-    id: p.cid,
-    source: "bluesky" as const,
-    authorName: p.author.displayName || p.author.handle,
-    authorHandle: p.author.handle,
-    authorImage: p.author.avatar || "",
-    content: p.record.text,
-    topicId,
-    topicName,
-    humanScore: computeContentHeuristicScore(p),
-    likeCount: p.likeCount ?? 0,
-    repostCount: p.repostCount ?? 0,
-    replyCount: p.replyCount ?? 0,
-    createdAt: p.record.createdAt,
-    externalUrl: `https://bsky.app/profile/${p.author.handle}/post/${p.uri.split("/").pop()}`,
-  }))
 }
