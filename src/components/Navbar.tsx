@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import ThemeToggle from "@/components/ThemeToggle"
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -52,6 +53,8 @@ export default function Navbar() {
           </svg>
           Post
         </Link>
+
+        <ThemeToggle />
 
         {session?.user && (
           <div className="relative">

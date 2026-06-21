@@ -1,25 +1,82 @@
 @import "tailwindcss";
 
+/* ============================================================
+   SIGNAL DESIGN SYSTEM — Tailwind v4 CSS-based configuration
+   Dark mode: class-based (.dark on <html>)
+   ============================================================ */
+
+/* ── Light-mode tokens (default) ──────────────────────────── */
 :root {
-  --background: #F8FAFC;
-  --foreground: #0F172A;
+  --bg: #FFF8EC;
+  --surface: #FFFFFF;
+  --surface-secondary: #F7EFE0;
+  --border: #DCCCAC;
+  --border-strong: #C9B690;
+  --text-primary: #2B331E;
+  --text-secondary: #5C6B4A;
+  --text-tertiary: #8B9A78;
+  --accent: #546B41;
+  --accent-hover: #455934;
+  --accent-soft: #E8EDE0;
+  --secondary-accent: #99AD7A;
 }
 
+/* ── Dark-mode tokens ─────────────────────────────────────── */
+:root.dark {
+  --bg: #12160D;
+  --surface: #1C2214;
+  --surface-secondary: #242C1B;
+  --border: #3A4630;
+  --border-strong: #4A5A3D;
+  --text-primary: #FFF8EC;
+  --text-secondary: #DCCCAC;
+  --text-tertiary: #99AD7A;
+  --accent: #99AD7A;
+  --accent-hover: #ADC08F;
+  --accent-soft: #2A331F;
+  --secondary-accent: #DCCCAC;
+}
+
+/* ── Tailwind v4 theme extension (CSS-in-theme approach) ─── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Design-token colors → Tailwind utility classes */
+  --color-app:              var(--bg);
+  --color-surface:          var(--surface);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-border-app:       var(--border);
+  --color-border-strong:    var(--border-strong);
+  --color-text-primary:     var(--text-primary);
+  --color-text-secondary:   var(--text-secondary);
+  --color-text-tertiary:    var(--text-tertiary);
+  --color-accent:           var(--accent);
+  --color-accent-hover:     var(--accent-hover);
+  --color-accent-soft:      var(--accent-soft);
+  --color-secondary-accent: var(--secondary-accent);
+
+  /* Legacy aliases kept for backward compat */
+  --color-background:       var(--bg);
+  --color-foreground:       var(--text-primary);
 }
 
+/* ── Smooth theme transition ─────────────────────────────── */
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Base body styles ────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text-primary);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   overflow-y: scroll;
 }
 
-/* Custom premium scrollbar styling */
+/* ── Scrollbar styling ───────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -28,14 +85,14 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E2E8F0;
+  background: var(--border);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #CBD5E1;
+  background: var(--border-strong);
 }
 
-/* Opacity Fade Animations */
+/* ── Animations ──────────────────────────────────────────── */
 @keyframes fadeIn {
   from {
     opacity: 0;
