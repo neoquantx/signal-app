@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import Navbar from "@/components/Navbar"
@@ -17,7 +18,10 @@ export default async function ConnectPage() {
             Signal scores every imported post for authenticity and shows exactly why you're seeing it — no hidden algorithm, ever.
           </p>
         </div>
-        <ConnectClient />
+        {/* Suspense required because ConnectClient uses useSearchParams() */}
+        <Suspense fallback={null}>
+          <ConnectClient />
+        </Suspense>
       </main>
     </div>
   )
