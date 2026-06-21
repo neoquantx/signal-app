@@ -72,7 +72,7 @@ async function getBlueskySession(): Promise<string | null> {
   }
 }
 
-function computeContentHeuristicScore(post: BlueskyPost): number {
+export function computeContentHeuristicScore(post: BlueskyPost): number {
   let score = 90
   const text = post.record.text || ""
   const len = text.length
