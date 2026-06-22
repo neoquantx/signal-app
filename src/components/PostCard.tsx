@@ -44,8 +44,8 @@ export default function PostCard({ post, currentUserId }: Props) {
   }
 
   return (
-    <TiltCard maxTilt={4}>
-      <div className="bg-surface p-5 border-b border-border-app last:border-b-0 hover:bg-surface-secondary/50 hover:shadow-md hover:shadow-black/5 transition-all duration-200">
+    <TiltCard maxTilt={7}>
+      <div className="bg-surface p-6 rounded-3xl hover:bg-surface-secondary/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
         <div className="flex items-start gap-4">
           {post.authorImage ? (
             <img src={post.authorImage} className="w-10 h-10 rounded-full flex-shrink-0 object-cover border border-border-app shadow-sm" alt={post.authorName} />
@@ -83,7 +83,7 @@ export default function PostCard({ post, currentUserId }: Props) {
             <p className="text-sm text-text-secondary leading-relaxed mb-4 font-normal whitespace-pre-wrap">{post.content}</p>
 
             {/* Trust Provenance Card */}
-            <div className="bg-accent-soft/40 rounded-xl p-3.5 mb-4 border-l-2 border-accent border border-y-border-app/50 border-r-border-app/50 shadow-sm">
+            <div className="bg-accent-soft/40 p-3.5 mb-4 border-l-2 border-accent">
               <p className="text-[11px] font-medium text-text-tertiary mb-2 flex items-center gap-1">
                 <span className="text-accent font-bold">↳</span> Why you see this
               </p>

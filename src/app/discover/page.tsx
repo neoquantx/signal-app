@@ -12,8 +12,8 @@ export default async function DiscoverPage() {
       <Navbar />
       <main className="max-w-6xl mx-auto pt-20 px-4 pb-10">
         <div className="mb-6 mt-6">
-          <h1 className="text-lg font-medium text-text-primary">Discover</h1>
-          <p className="text-xs text-text-tertiary">Real posts from the open web, scored for authenticity by Signal</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">Discover</h1>
+          <p className="text-xs text-text-tertiary mt-2">Real posts from the open web, scored for authenticity by Signal</p>
         </div>
         <DiscoverClient />
       </main>

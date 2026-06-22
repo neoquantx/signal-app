@@ -55,9 +55,9 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
       </div>
 
       {/* Feed List Skeleton */}
-      <div className="bg-surface rounded-3xl border border-border-app divide-y divide-border-app overflow-hidden shadow-sm">
+      <div className="space-y-4">
         {[1, 2, 3].map(i => (
-          <div key={i} className="p-5 animate-pulse flex items-start gap-4">
+          <div key={i} className="bg-surface rounded-3xl p-6 animate-pulse flex items-start gap-4">
             {/* Avatar skeleton */}
             <div className="w-10 h-10 bg-surface-secondary rounded-full flex-shrink-0" />
             
@@ -79,7 +79,6 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
               </div>
               <div className="h-8 bg-surface-secondary rounded-full w-28" />
             </div>
-          </div>
         ))}
       </div>
     </div>
@@ -102,7 +101,7 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
 
       {/* Header title */}
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-xl font-bold tracking-tight text-text-primary">Your feed</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">Your feed</h1>
       </div>
 
       {/* Tab Switcher */}
@@ -141,9 +140,15 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
           <p className="text-xs text-text-tertiary">Be the first to post something trustworthy</p>
         </div>
       ) : (
-        <div className="bg-surface rounded-3xl border border-border-app divide-y divide-border-app overflow-hidden shadow-sm">
-          {posts.map(post => (
-            <PostCard key={post.id} post={post} currentUserId={currentUserId} />
+        <div className="space-y-4">
+          {posts.map((post, i) => (
+            <div 
+              key={post.id} 
+              className="animate-fade-in" 
+              style={{ animationDelay: `${Math.min(i * 50, 300)}ms`, animationFillMode: 'both' }}
+            >
+              <PostCard post={post} currentUserId={currentUserId} />
+            </div>
           ))}
         </div>
       )}

@@ -238,11 +238,12 @@ export default function DiscoverClient() {
               </div>
             )}
 
-            {!topicLoading && posts.map(post => {
+            {!topicLoading && posts.map((post, i) => {
               const key = `${post.authorHandle}-${post.topicId}`
               return (
-                <TiltCard key={post.id} maxTilt={4}>
-                  <div className="bg-surface rounded-2xl border border-border-app p-5 mb-3">
+                <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${Math.min(i * 50, 300)}ms`, animationFillMode: 'both' }}>
+                <TiltCard maxTilt={7}>
+                  <div className="bg-surface rounded-3xl p-6 mb-4 hover:bg-surface-secondary/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
                     <div className="flex items-start gap-3">
                       {post.authorImage ? (
                         <img src={post.authorImage} className="w-9 h-9 rounded-full flex-shrink-0" alt="" />
@@ -271,7 +272,7 @@ export default function DiscoverClient() {
 
                         <p className="text-sm text-text-primary leading-relaxed mb-3">{post.content}</p>
 
-                        <div className="bg-surface-secondary rounded-xl p-3 mb-3 border border-border-app">
+                        <div className="bg-surface-secondary rounded-xl p-3.5 mb-3 border-l-2 border-accent">
                           <p className="text-xs text-text-tertiary mb-1.5">↳ Why you see this</p>
                           <p className="text-xs text-text-secondary">
                             Imported from Bluesky · matched topic <b>{post.topicName}</b> · authenticity score computed from content + engagement pattern (no behavioral signal available for external posts)
@@ -298,6 +299,7 @@ export default function DiscoverClient() {
                     </div>
                   </div>
                 </TiltCard>
+                </div>
               )
             })}
           </div>
@@ -373,9 +375,10 @@ export default function DiscoverClient() {
           )}
 
           {/* ---- Feed posts ---- */}
-          {networkStatus.connected && !networkLoading && networkPosts.map(post => (
-            <TiltCard key={post.id} maxTilt={4}>
-              <div className="bg-surface rounded-2xl border border-border-app p-5 mb-3">
+          {networkStatus.connected && !networkLoading && networkPosts.map((post, i) => (
+            <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${Math.min(i * 50, 300)}ms`, animationFillMode: 'both' }}>
+            <TiltCard maxTilt={7}>
+              <div className="bg-surface rounded-3xl p-6 mb-4 hover:bg-surface-secondary/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
                 {/* Repost indicator */}
                 {post.isRepost && post.repostedBy && (
                   <p className="text-xs text-text-tertiary mb-2 pl-0.5">
@@ -406,7 +409,7 @@ export default function DiscoverClient() {
                     <p className="text-sm text-text-primary leading-relaxed mb-3">{post.content}</p>
 
                     {/* Network-specific provenance box */}
-                    <div className="bg-surface-secondary rounded-xl p-3 mb-3 border border-border-app">
+                    <div className="bg-surface-secondary rounded-xl p-3.5 mb-3 border-l-2 border-accent">
                       <p className="text-xs text-text-tertiary mb-1.5">↳ Why you see this</p>
                       <p className="text-xs text-text-secondary">
                         From your Bluesky network — you follow{" "}
@@ -432,6 +435,7 @@ export default function DiscoverClient() {
                 </div>
               </div>
             </TiltCard>
+            </div>
           ))}
         </div>
       )}

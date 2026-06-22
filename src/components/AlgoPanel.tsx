@@ -53,9 +53,16 @@ export default function AlgoPanel() {
       </div>
 
       <div className="p-5">
-        <div className="space-y-5">
+        <div className="bg-surface-secondary border border-border-app rounded-xl p-4 mb-5 shadow-sm">
+          <p className="text-sm text-text-primary leading-relaxed font-medium">
+            {prefs.trustChainWeight}% of your feed comes from people you trust directly, {prefs.topicRelevanceWeight}% matches topics you follow, and {prefs.recencyWeight}% favors what's recent.
+          </p>
+        </div>
+
+        <div className="space-y-6">
           <SliderRow
             label="Trust chain weight"
+            description="How much comes from people you've trusted"
             value={prefs.trustChainWeight}
             onChange={v => handleChange("trustChainWeight", v)}
             accentColor="accent-[#546B41]"
@@ -63,6 +70,7 @@ export default function AlgoPanel() {
           />
           <SliderRow
             label="Topic relevance"
+            description="How well it matches your interests"
             value={prefs.topicRelevanceWeight}
             onChange={v => handleChange("topicRelevanceWeight", v)}
             accentColor="accent-[#8B5CF6]"
@@ -70,6 +78,7 @@ export default function AlgoPanel() {
           />
           <SliderRow
             label="Recency"
+            description="How recently it was posted"
             value={prefs.recencyWeight}
             onChange={v => handleChange("recencyWeight", v)}
             accentColor="accent-[#10B981]"
@@ -122,15 +131,16 @@ export default function AlgoPanel() {
   )
 }
 
-function SliderRow({ label, value, onChange, accentColor, trackColor }: {
-  label: string; value: number; onChange: (v: number) => void; accentColor: string; trackColor: string
+function SliderRow({ label, description, value, onChange, accentColor, trackColor }: {
+  label: string; description: string; value: number; onChange: (v: number) => void; accentColor: string; trackColor: string
 }) {
   return (
     <div>
-      <div className="flex justify-between mb-1.5">
-        <span className="text-xs font-semibold text-text-secondary">{label}</span>
-        <span className="text-xs font-bold text-text-primary">{value}%</span>
+      <div className="flex justify-between mb-0.5">
+        <span className="text-sm font-semibold text-text-primary">{label}</span>
+        <span className="text-sm font-bold text-text-primary">{value}%</span>
       </div>
+      <p className="text-xs text-text-tertiary mb-2">{description}</p>
       <input
         type="range" min={0} max={100} value={value}
         onChange={e => onChange(Number(e.target.value))}

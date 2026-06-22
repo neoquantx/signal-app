@@ -73,27 +73,57 @@ async function getBlueskySession(): Promise<string | null> {
 }
 
 export function computeContentHeuristicScore(post: BlueskyPost): number {
-  let score = 90
+  let score = 78
   const text = post.record.text || ""
   const len = text.length
 
-  if (len < 15) score -= 15
-
-  const hashtagCount = (text.match(/#/g) || []).length
-  if (hashtagCount > 4) score -= 20
-
-  const linkCount = (text.match(/https?:\/\//g) || []).length
-  if (linkCount > 1) score -= 10
+  // Length signal
+  if (len < 15) {
+    score -= Math.max(0, (15 - len) * 1.5)
+  } else if (len >= 40 && len <= 280) {
+    score += Math.max(2, 5 - Math.abs(len - 150) * (3 / 110))
+  } else if (len > 280) {
+    score -= Math.min(8, 3 + (len - 280) * 0.05)
+  }
 
   const likes = post.likeCount ?? 0
   const reposts = post.repostCount ?? 0
-  if (reposts > 0 && likes === 0 && reposts > 5) score -= 15
+  const replies = post.replyCount ?? 0
 
-  if (likes === 0 && reposts === 0 && (post.replyCount ?? 0) === 0 && len > 200) score -= 8
+  // Engagement health signal
+  if (likes > 0 && replies > 0 && reposts > 0) {
+    const minEng = Math.min(likes, replies, reposts)
+    const maxEng = Math.max(likes, replies, reposts)
+    const ratio = maxEng > 0 ? minEng / maxEng : 0
+    score += 3 + 5 * ratio
+  }
 
-  if (/(.)\1{4,}/.test(text)) score -= 25
+  if (reposts > likes * 3 && reposts > 10) {
+    score -= 15
+  }
 
-  return Math.max(20, Math.min(99, Math.round(score)))
+  if (likes === 0 && reposts === 0 && replies === 0 && len > 100) {
+    score -= Math.min(6, 3 + (len - 100) * 0.03)
+  }
+
+  // Hashtag signal
+  const hashtagCount = (text.match(/#/g) || []).length
+  if (hashtagCount > 3) {
+    score -= Math.min(15, (hashtagCount - 3) * 3)
+  }
+
+  // Link signal
+  const linkCount = (text.match(/https?:\/\//g) || []).length
+  if (linkCount > 1) {
+    score -= Math.min(12, (linkCount - 1) * 4)
+  }
+
+  // Spam pattern signal
+  if (/(.)\1{4,}/.test(text)) {
+    score -= 25
+  }
+
+  return Math.max(25, Math.min(98, Math.round(score)))
 }
 
 export async function searchBlueskyPosts(
