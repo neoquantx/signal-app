@@ -79,6 +79,7 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
               </div>
               <div className="h-8 bg-surface-secondary rounded-full w-28" />
             </div>
+          </div>
         ))}
       </div>
     </div>
