@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geist.className} bg-app text-text-primary antialiased`}>
         {/* Persistent ambient Three.js background — renders behind all content */}
         <AmbientBackground />
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider><div className="relative z-10">{children}</div></SessionProvider>
       </body>
     </html>
   )

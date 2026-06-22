@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import { getTopicsByCategory, type Topic } from "@/lib/topics"
+import TiltCard from "@/components/TiltCard"
 
 // ---------------------------------------------------------------------------
 // Shared post shape used by both tabs
@@ -42,7 +43,7 @@ interface MyFeedPost {
 type ActiveTab = "topic" | "network"
 
 // ---------------------------------------------------------------------------
-// Score helpers (shared)
+// Score helpers (shared) — semantic status colors intentionally preserved
 // ---------------------------------------------------------------------------
 function scoreColorClass(score: number) {
   return score >= 90
@@ -148,8 +149,8 @@ export default function DiscoverClient() {
           onClick={() => setActiveTab("topic")}
           className={`text-sm px-4 py-2 rounded-full font-medium transition-all ${
             activeTab === "topic"
-              ? "bg-blue-600 text-white shadow-sm"
-              : "bg-white text-gray-500 border border-gray-200 hover:border-blue-200 hover:text-blue-600"
+              ? "bg-accent text-white shadow-sm"
+              : "bg-surface text-text-secondary border border-border-app hover:border-accent-border hover:text-accent"
           }`}
         >
           By Topic
@@ -158,8 +159,8 @@ export default function DiscoverClient() {
           onClick={() => setActiveTab("network")}
           className={`text-sm px-4 py-2 rounded-full font-medium transition-all ${
             activeTab === "network"
-              ? "bg-blue-600 text-white shadow-sm"
-              : "bg-white text-gray-500 border border-gray-200 hover:border-blue-200 hover:text-blue-600"
+              ? "bg-accent text-white shadow-sm"
+              : "bg-surface text-text-secondary border border-border-app hover:border-accent-border hover:text-accent"
           }`}
         >
           Your Network
@@ -167,17 +168,35 @@ export default function DiscoverClient() {
       </div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* BY TOPIC TAB — exactly the original layout, unchanged               */}
+      {/* BY TOPIC TAB                                                        */}
       {/* ------------------------------------------------------------------ */}
       {activeTab === "topic" && (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar */}
+          {/* Sidebar — fixed column on desktop, horizontal chip row on mobile */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 sticky top-20 max-h-[75vh] overflow-y-auto">
-              <p className="text-xs font-medium text-gray-400 mb-3 uppercase tracking-wide">Topics</p>
+            {/* Mobile: horizontal scrollable chips */}
+            <div className="lg:hidden overflow-x-auto pb-3 -mx-4 px-4 flex gap-2 scrollbar-none">
+              {Object.values(grouped).flat().map((t: Topic) => (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveTopic(t.id)}
+                  className={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap transition-colors flex-shrink-0 ${
+                    activeTopic === t.id
+                      ? "bg-accent text-white font-medium"
+                      : "bg-surface text-text-secondary border border-border-app hover:border-accent-border hover:text-accent"
+                  }`}
+                >
+                  {t.name}
+                </button>
+              ))}
+            </div>
+
+            {/* Desktop: vertical sidebar */}
+            <div className="hidden lg:block bg-surface rounded-2xl border border-border-app p-4 sticky top-20 max-h-[75vh] overflow-y-auto">
+              <p className="text-xs font-medium text-text-tertiary mb-3 uppercase tracking-wide">Topics</p>
               {categories.map(cat => (
                 <div key={cat} className="mb-4">
-                  <p className="text-xs font-medium text-gray-500 mb-1.5">{cat}</p>
+                  <p className="text-xs font-medium text-text-secondary mb-1.5">{cat}</p>
                   <div className="flex flex-col gap-1">
                     {grouped[cat].map((t: Topic) => (
                       <button
@@ -185,8 +204,8 @@ export default function DiscoverClient() {
                         onClick={() => setActiveTopic(t.id)}
                         className={`text-left text-xs px-2.5 py-1.5 rounded-lg transition-colors ${
                           activeTopic === t.id
-                            ? "bg-blue-50 text-blue-600 font-medium"
-                            : "text-gray-500 hover:bg-gray-50"
+                            ? "bg-accent-soft text-accent font-medium"
+                            : "text-text-secondary hover:bg-surface-secondary"
                         }`}
                       >
                         {t.name}
@@ -200,80 +219,85 @@ export default function DiscoverClient() {
 
           {/* Post list */}
           <div className="lg:col-span-3">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-medium text-gray-900">Live from Bluesky · scored by Signal</h2>
-              <span className="text-xs text-gray-400">Real posts, real authenticity check</span>
+            <div className="flex items-center justify-between mb-4 gap-2">
+              <h2 className="text-sm font-medium text-text-primary">Live from Bluesky · scored by Signal</h2>
+              <span className="text-xs text-text-tertiary hidden sm:block">Real posts, real authenticity check</span>
             </div>
 
             {topicLoading && (
               <div className="space-y-3">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5 animate-pulse h-28" />
+                  <div key={i} className="bg-surface rounded-2xl border border-border-app p-5 animate-pulse h-28" />
                 ))}
               </div>
             )}
 
             {!topicLoading && posts.length === 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
-                <p className="text-sm text-gray-500">No posts found for this topic right now</p>
+              <div className="bg-surface rounded-2xl border border-border-app p-10 text-center">
+                <p className="text-sm text-text-secondary">No posts found for this topic right now</p>
               </div>
             )}
 
             {!topicLoading && posts.map(post => {
               const key = `${post.authorHandle}-${post.topicId}`
               return (
-                <div key={post.id} className="bg-white rounded-2xl border border-gray-100 p-5 mb-3">
-                  <div className="flex items-start gap-3">
-                    {post.authorImage ? (
-                      <img src={post.authorImage} className="w-9 h-9 rounded-full flex-shrink-0" alt="" />
-                    ) : (
-                      <div className="w-9 h-9 rounded-full bg-gray-100 flex-shrink-0" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1 gap-2">
-                        <div className="min-w-0">
-                          <span className="text-sm font-medium text-gray-900">{post.authorName}</span>
-                          <span className="text-xs text-gray-400 ml-2">@{post.authorHandle}</span>
-                          <span className="text-xs text-blue-500 ml-2 bg-blue-50 px-1.5 py-0.5 rounded-full">via Bluesky</span>
+                <TiltCard key={post.id} maxTilt={4}>
+                  <div className="bg-surface rounded-2xl border border-border-app p-5 mb-3">
+                    <div className="flex items-start gap-3">
+                      {post.authorImage ? (
+                        <img src={post.authorImage} className="w-9 h-9 rounded-full flex-shrink-0" alt="" />
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-surface-secondary flex-shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1 gap-2 flex-wrap">
+                          <div className="min-w-0">
+                            <span className="text-sm font-medium text-text-primary">{post.authorName}</span>
+                            <span className="text-xs text-text-tertiary ml-2">@{post.authorHandle}</span>
+                            {/* "via Bluesky" badge uses accent-soft */}
+                            <span className="text-xs text-accent ml-2 bg-accent-soft px-1.5 py-0.5 rounded-full">via Bluesky</span>
+                          </div>
+                          {/* Score badge — semantic status color preserved */}
+                          <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border flex-shrink-0 ${scoreColorClass(post.humanScore)}`}>
+                            <div className={`w-1.5 h-1.5 rounded-full ${dotColorClass(post.humanScore)}`} />
+                            {post.humanScore}% human
+                          </div>
                         </div>
-                        <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border flex-shrink-0 ${scoreColorClass(post.humanScore)}`}>
-                          <div className={`w-1.5 h-1.5 rounded-full ${dotColorClass(post.humanScore)}`} />
-                          {post.humanScore}% human
+
+                        {/* Topic pill */}
+                        <span className="inline-block text-xs text-accent bg-accent-soft px-2 py-0.5 rounded-full mb-2">
+                          {post.topicName}
+                        </span>
+
+                        <p className="text-sm text-text-primary leading-relaxed mb-3">{post.content}</p>
+
+                        <div className="bg-surface-secondary rounded-xl p-3 mb-3 border border-border-app">
+                          <p className="text-xs text-text-tertiary mb-1.5">↳ Why you see this</p>
+                          <p className="text-xs text-text-secondary">
+                            Imported from Bluesky · matched topic <b>{post.topicName}</b> · authenticity score computed from content + engagement pattern (no behavioral signal available for external posts)
+                          </p>
                         </div>
-                      </div>
 
-                      <span className="inline-block text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full mb-2">
-                        {post.topicName}
-                      </span>
-
-                      <p className="text-sm text-gray-800 leading-relaxed mb-3">{post.content}</p>
-
-                      <div className="bg-gray-50 rounded-xl p-3 mb-3 border border-gray-100">
-                        <p className="text-xs text-gray-400 mb-1.5">↳ Why you see this</p>
-                        <p className="text-xs text-gray-500">
-                          Imported from Bluesky · matched topic <b>{post.topicName}</b> · authenticity score computed from content + engagement pattern (no behavioral signal available for external posts)
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => handleTrust(post.authorHandle, post.topicId)}
-                          disabled={trustedHandles[key]}
-                          className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all ${
-                            trustedHandles[key]
-                              ? "bg-blue-50 border-blue-200 text-blue-600"
-                              : "border-gray-200 text-gray-500 hover:border-blue-200 hover:text-blue-600"
-                          }`}
-                        >
-                          {trustedHandles[key] ? "✓ Trusted" : `Trust on ${post.topicName.split(" ")[0]}`}
-                        </button>
-                        <a href={post.externalUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-gray-600">
-                          View on Bluesky ↗
-                        </a>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleTrust(post.authorHandle, post.topicId)}
+                            disabled={trustedHandles[key]}
+                            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all ${
+                              trustedHandles[key]
+                                ? "bg-accent-soft border-accent-border text-accent"
+                                : "border-border-app text-text-secondary hover:border-accent-border hover:text-accent"
+                            }`}
+                          >
+                            {trustedHandles[key] ? "✓ Trusted" : `Trust on ${post.topicName.split(" ")[0]}`}
+                          </button>
+                          <a href={post.externalUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-text-tertiary hover:text-text-secondary">
+                            View on Bluesky ↗
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </TiltCard>
               )
             })}
           </div>
@@ -285,35 +309,35 @@ export default function DiscoverClient() {
       {/* ------------------------------------------------------------------ */}
       {activeTab === "network" && (
         <div className="max-w-2xl">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-medium text-gray-900">Your Bluesky Network · scored by Signal</h2>
-            <span className="text-xs text-gray-400">People you follow, authenticity checked</span>
+          <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
+            <h2 className="text-sm font-medium text-text-primary">Your Bluesky Network · scored by Signal</h2>
+            <span className="text-xs text-text-tertiary">People you follow, authenticity checked</span>
           </div>
 
           {/* ---- Not yet checked (brief flicker guard) ---- */}
           {!networkStatus.checked && !networkLoading && (
             <div className="space-y-3">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5 animate-pulse h-28" />
+                <div key={i} className="bg-surface rounded-2xl border border-border-app p-5 animate-pulse h-28" />
               ))}
             </div>
           )}
 
           {/* ---- Not connected — show prompt ---- */}
           {networkStatus.checked && !networkStatus.connected && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center flex flex-col items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-2xl">🦋</div>
+            <div className="bg-surface rounded-2xl border border-border-app p-10 text-center flex flex-col items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-accent-soft flex items-center justify-center text-2xl">🦋</div>
               <div>
-                <p className="text-sm font-medium text-gray-900 mb-1">
+                <p className="text-sm font-medium text-text-primary mb-1">
                   Connect your Bluesky account
                 </p>
-                <p className="text-xs text-gray-500 max-w-xs">
+                <p className="text-xs text-text-secondary max-w-xs">
                   See your real feed from people you follow, scored by Signal for authenticity — no hidden algorithm.
                 </p>
               </div>
               <a
                 href="/connect"
-                className="text-sm px-5 py-2.5 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors"
+                className="text-sm px-5 py-2.5 rounded-full bg-accent text-white font-medium hover:bg-accent-hover transition-colors"
               >
                 Connect Bluesky →
               </a>
@@ -324,16 +348,16 @@ export default function DiscoverClient() {
           {networkStatus.connected && networkLoading && (
             <div className="space-y-3">
               {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5 animate-pulse h-28" />
+                <div key={i} className="bg-surface rounded-2xl border border-border-app p-5 animate-pulse h-28" />
               ))}
             </div>
           )}
 
           {/* ---- Error state ---- */}
           {networkStatus.connected && !networkLoading && networkError && networkPosts.length === 0 && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
-              <p className="text-sm text-gray-500 mb-3">{networkError}</p>
-              <a href="/connect" className="text-xs text-blue-600 hover:underline">
+            <div className="bg-surface rounded-2xl border border-border-app p-8 text-center">
+              <p className="text-sm text-text-secondary mb-3">{networkError}</p>
+              <a href="/connect" className="text-xs text-accent hover:underline">
                 Reconnect your Bluesky account →
               </a>
             </div>
@@ -341,8 +365,8 @@ export default function DiscoverClient() {
 
           {/* ---- Empty state (connected, no error, 0 posts) ---- */}
           {networkStatus.connected && !networkLoading && !networkError && networkPosts.length === 0 && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
-              <p className="text-sm text-gray-500">
+            <div className="bg-surface rounded-2xl border border-border-app p-10 text-center">
+              <p className="text-sm text-text-secondary">
                 No posts found. Follow some accounts on Bluesky to see your feed here.
               </p>
             </div>
@@ -350,61 +374,64 @@ export default function DiscoverClient() {
 
           {/* ---- Feed posts ---- */}
           {networkStatus.connected && !networkLoading && networkPosts.map(post => (
-            <div key={post.id} className="bg-white rounded-2xl border border-gray-100 p-5 mb-3">
-              {/* Repost indicator */}
-              {post.isRepost && post.repostedBy && (
-                <p className="text-xs text-gray-400 mb-2 pl-0.5">
-                  🔁 Reposted by @{post.repostedBy}
-                </p>
-              )}
-
-              <div className="flex items-start gap-3">
-                {post.authorImage ? (
-                  <img src={post.authorImage} className="w-9 h-9 rounded-full flex-shrink-0" alt="" />
-                ) : (
-                  <div className="w-9 h-9 rounded-full bg-gray-100 flex-shrink-0" />
+            <TiltCard key={post.id} maxTilt={4}>
+              <div className="bg-surface rounded-2xl border border-border-app p-5 mb-3">
+                {/* Repost indicator */}
+                {post.isRepost && post.repostedBy && (
+                  <p className="text-xs text-text-tertiary mb-2 pl-0.5">
+                    🔁 Reposted by @{post.repostedBy}
+                  </p>
                 )}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1 gap-2">
-                    <div className="min-w-0">
-                      <span className="text-sm font-medium text-gray-900">{post.authorName}</span>
-                      <span className="text-xs text-gray-400 ml-2">@{post.authorHandle}</span>
-                      <span className="text-xs text-blue-500 ml-2 bg-blue-50 px-1.5 py-0.5 rounded-full">via Bluesky</span>
+
+                <div className="flex items-start gap-3">
+                  {post.authorImage ? (
+                    <img src={post.authorImage} className="w-9 h-9 rounded-full flex-shrink-0" alt="" />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-surface-secondary flex-shrink-0" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1 gap-2 flex-wrap">
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium text-text-primary">{post.authorName}</span>
+                        <span className="text-xs text-text-tertiary ml-2">@{post.authorHandle}</span>
+                        <span className="text-xs text-accent ml-2 bg-accent-soft px-1.5 py-0.5 rounded-full">via Bluesky</span>
+                      </div>
+                      {/* Score badge — semantic status color preserved */}
+                      <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border flex-shrink-0 ${scoreColorClass(post.humanScore)}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${dotColorClass(post.humanScore)}`} />
+                        {post.humanScore}% human
+                      </div>
                     </div>
-                    <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border flex-shrink-0 ${scoreColorClass(post.humanScore)}`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${dotColorClass(post.humanScore)}`} />
-                      {post.humanScore}% human
+
+                    <p className="text-sm text-text-primary leading-relaxed mb-3">{post.content}</p>
+
+                    {/* Network-specific provenance box */}
+                    <div className="bg-surface-secondary rounded-xl p-3 mb-3 border border-border-app">
+                      <p className="text-xs text-text-tertiary mb-1.5">↳ Why you see this</p>
+                      <p className="text-xs text-text-secondary">
+                        From your Bluesky network — you follow{" "}
+                        <b>@{post.authorHandle}</b>
+                        {post.isRepost ? " · shown as a repost" : ""} · authenticity score computed from content + engagement pattern
+                      </p>
                     </div>
-                  </div>
 
-                  <p className="text-sm text-gray-800 leading-relaxed mb-3">{post.content}</p>
-
-                  {/* Network-specific provenance box */}
-                  <div className="bg-gray-50 rounded-xl p-3 mb-3 border border-gray-100">
-                    <p className="text-xs text-gray-400 mb-1.5">↳ Why you see this</p>
-                    <p className="text-xs text-gray-500">
-                      From your Bluesky network — you follow{" "}
-                      <b>@{post.authorHandle}</b>
-                      {post.isRepost ? " · shown as a repost" : ""} · authenticity score computed from content + engagement pattern
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-4 text-xs text-gray-400">
-                    <span>♥ {post.likeCount}</span>
-                    <span>🔁 {post.repostCount}</span>
-                    <span>💬 {post.replyCount}</span>
-                    <a
-                      href={post.externalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-gray-600 ml-auto"
-                    >
-                      View on Bluesky ↗
-                    </a>
+                    <div className="flex items-center gap-4 text-xs text-text-tertiary flex-wrap">
+                      <span>♥ {post.likeCount}</span>
+                      <span>🔁 {post.repostCount}</span>
+                      <span>💬 {post.replyCount}</span>
+                      <a
+                        href={post.externalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-text-secondary ml-auto"
+                      >
+                        View on Bluesky ↗
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </TiltCard>
           ))}
         </div>
       )}

@@ -164,7 +164,7 @@ export default function ConnectClient() {
   // ---- Render ----
   return (
     <div className="max-w-2xl">
-      {/* OAuth error banner */}
+      {/* OAuth error banner — semantic red preserved */}
       {oauthError && (
         <div className="mb-4 flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
           <span className="text-red-500 mt-0.5 shrink-0">⚠️</span>
@@ -179,6 +179,10 @@ export default function ConnectClient() {
         </div>
       )}
 
+      {/*
+        Task 4: grid-cols-1 on mobile, grid-cols-2 on sm+
+        Task 5: input has id + associated label (sr-only for Bluesky handle field)
+      */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {PLATFORMS.map(p => {
           // ----------------------------------------------------------------
@@ -192,7 +196,7 @@ export default function ConnectClient() {
             return (
               <div
                 key="bluesky"
-                className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3"
+                className="bg-surface rounded-2xl border border-border-app p-5 flex flex-col gap-3"
               >
                 {/* Header */}
                 <div className="flex items-center justify-between">
@@ -203,13 +207,13 @@ export default function ConnectClient() {
                     >
                       B
                     </div>
-                    <span className="text-sm font-medium text-gray-900">Bluesky</span>
+                    <span className="text-sm font-medium text-text-primary">Bluesky</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-gray-500">{p.description}</p>
+                <p className="text-xs text-text-secondary">{p.description}</p>
 
-                {/* Connected state */}
+                {/* Connected state — semantic green preserved */}
                 {isConnected ? (
                   <div className="flex items-center gap-2">
                     <span className="flex-1 text-xs px-3 py-2 rounded-full font-medium bg-green-50 text-green-700 border border-green-200 truncate">
@@ -218,7 +222,7 @@ export default function ConnectClient() {
                     <button
                       onClick={handleBlueskyDisconnect}
                       disabled={isBusy}
-                      className="text-xs px-3 py-2 rounded-full font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40 shrink-0"
+                      className="text-xs px-3 py-2 rounded-full font-medium text-text-tertiary hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40 shrink-0"
                     >
                       {bskyBusy ? "…" : "Disconnect"}
                     </button>
@@ -230,8 +234,14 @@ export default function ConnectClient() {
                     {showHandleInput ? (
                       <form onSubmit={handleBlueskySubmit} className="flex flex-col gap-2">
                         <div className="flex gap-2">
+                          {/* Task 5: label (sr-only) + id for a11y */}
+                          <label htmlFor="bluesky-handle-input" className="sr-only">
+                            Bluesky handle
+                          </label>
                           <input
                             ref={handleInputRef}
+                            id="bluesky-handle-input"
+                            name="bluesky-handle"
                             type="text"
                             value={handleInput}
                             onChange={e => {
@@ -239,14 +249,14 @@ export default function ConnectClient() {
                               setHandleError(null)
                             }}
                             placeholder="yourhandle.bsky.social"
-                            className="flex-1 text-xs px-3 py-2 rounded-full border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                            className="flex-1 text-xs px-3 py-2 rounded-full border border-border-app bg-surface text-text-primary placeholder-text-tertiary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
                             autoCapitalize="none"
                             autoCorrect="off"
                             spellCheck={false}
                           />
                           <button
                             type="submit"
-                            className="text-xs px-4 py-2 rounded-full font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors shrink-0"
+                            className="text-xs px-4 py-2 rounded-full font-medium bg-accent text-white hover:bg-accent-hover transition-colors shrink-0"
                           >
                             Go
                           </button>
@@ -257,7 +267,7 @@ export default function ConnectClient() {
                         <button
                           type="button"
                           onClick={() => { setShowHandleInput(false); setHandleError(null) }}
-                          className="text-xs text-gray-400 hover:text-gray-600 self-start px-1"
+                          className="text-xs text-text-tertiary hover:text-text-secondary self-start px-1"
                         >
                           Cancel
                         </button>
@@ -267,7 +277,7 @@ export default function ConnectClient() {
                       <button
                         onClick={handleBlueskyConnect}
                         disabled={isLoading}
-                        className="text-xs px-3 py-2 rounded-full font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="text-xs px-3 py-2 rounded-full font-medium bg-accent text-white hover:bg-accent-hover transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                       >
                         {isLoading ? (
                           <>
@@ -289,7 +299,7 @@ export default function ConnectClient() {
           }
 
           // ----------------------------------------------------------------
-          // All other platform cards — unchanged cosmetic / coming-soon logic
+          // All other platform cards — coming-soon logic (cosmetic)
           // ----------------------------------------------------------------
           const isConnected = connectedOther.includes(p.id)
           const isBusy = busyOther === p.id
@@ -297,8 +307,8 @@ export default function ConnectClient() {
           return (
             <div
               key={p.id}
-              className={`bg-white rounded-2xl border p-5 flex flex-col gap-3 ${
-                p.enabled ? "border-gray-100" : "border-gray-100 opacity-60"
+              className={`bg-surface rounded-2xl border p-5 flex flex-col gap-3 ${
+                p.enabled ? "border-border-app" : "border-border-app opacity-60"
               }`}
             >
               <div className="flex items-center justify-between">
@@ -309,25 +319,26 @@ export default function ConnectClient() {
                   >
                     {p.name.charAt(0)}
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{p.name}</span>
+                  <span className="text-sm font-medium text-text-primary">{p.name}</span>
                 </div>
                 {!p.enabled && (
-                  <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">
+                  <span className="text-xs text-text-tertiary bg-surface-secondary px-2 py-0.5 rounded-full">
                     Coming soon
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-500">{p.description}</p>
+              <p className="text-xs text-text-secondary">{p.description}</p>
 
               {isConnected ? (
                 <div className="flex items-center gap-2">
+                  {/* Connected state — semantic green preserved */}
                   <span className="flex-1 text-xs px-3 py-2 rounded-full font-medium bg-green-50 text-green-600 border border-green-200 text-center">
                     ✓ Connected
                   </span>
                   <button
                     onClick={() => handleOtherDisconnect(p.id)}
                     disabled={isBusy}
-                    className="text-xs px-3 py-2 rounded-full font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40"
+                    className="text-xs px-3 py-2 rounded-full font-medium text-text-tertiary hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40"
                   >
                     {isBusy ? "…" : "Disconnect"}
                   </button>
@@ -338,8 +349,8 @@ export default function ConnectClient() {
                   disabled={!p.enabled || isBusy}
                   className={`text-xs px-3 py-2 rounded-full font-medium transition-all flex items-center justify-center gap-2 ${
                     p.enabled
-                      ? "bg-blue-600 text-white hover:bg-blue-700"
-                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      ? "bg-accent text-white hover:bg-accent-hover"
+                      : "bg-surface-secondary text-text-tertiary cursor-not-allowed"
                   }`}
                 >
                   {isBusy && (
@@ -358,7 +369,7 @@ export default function ConnectClient() {
 
       <button
         onClick={() => router.push("/feed")}
-        className="mt-6 text-xs text-gray-400 hover:text-gray-600"
+        className="mt-6 text-xs text-text-tertiary hover:text-text-secondary"
       >
         Skip for now → go to feed
       </button>

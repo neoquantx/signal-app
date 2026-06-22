@@ -198,7 +198,7 @@ export default function AmbientBackground() {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: -1,
+        zIndex: 0,
         pointerEvents: "none",
         opacity: 0.20,
       }}

@@ -56,6 +56,7 @@
   --color-accent-hover:     var(--accent-hover);
   --color-accent-soft:      var(--accent-soft);
   --color-secondary-accent: var(--secondary-accent);
+  --color-accent-border:    var(--accent);
 
   /* Legacy aliases kept for backward compat */
   --color-background:       var(--bg);

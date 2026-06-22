@@ -72,6 +72,7 @@ export default function ComposePage() {
     }
   }
 
+  // Semantic status colors — intentionally left as-is (green/amber/red)
   const scoreColor = humanScore >= 90
     ? "text-[#16A34A]"
     : humanScore >= 70
@@ -100,29 +101,29 @@ export default function ComposePage() {
   const strokeDashoffset = circumference - (percentage / 100) * circumference
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-app">
       <Navbar />
       <main className="max-w-xl mx-auto pt-24 px-4 pb-16 animate-fade-in">
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 mt-6 shadow-sm shadow-slate-100/40">
+        <div className="bg-surface rounded-3xl border border-border-app p-6 mt-6 shadow-sm">
           
           {/* User profile section */}
           <div className="flex items-center gap-3 mb-5">
             {session?.user?.image ? (
-              <img src={session.user.image} className="w-10 h-10 rounded-full border border-slate-100 shadow-sm" alt="avatar" />
+              <img src={session.user.image} className="w-10 h-10 rounded-full border border-border-app shadow-sm" alt="avatar" />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 text-[#2563EB] flex items-center justify-center font-bold text-sm">
+              <div className="w-10 h-10 rounded-full bg-accent-soft border border-border-app text-accent flex items-center justify-center font-bold text-sm">
                 {session?.user?.name?.charAt(0) ?? "U"}
               </div>
             )}
             <div>
-              <p className="text-sm font-semibold text-[#0F172A]">{session?.user?.name}</p>
-              <p className="text-xs text-slate-400">Drafting verified broadcast</p>
+              <p className="text-sm font-semibold text-text-primary">{session?.user?.name}</p>
+              <p className="text-xs text-text-tertiary">Drafting verified broadcast</p>
             </div>
           </div>
 
           {/* Horizontal Chips Topic Selector */}
           <div className="mb-5">
-            <p className="text-xs font-semibold text-[#475569] mb-2.5">Topic area</p>
+            <p className="text-xs font-semibold text-text-secondary mb-2.5">Topic area</p>
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
               {DEFAULT_TOPICS.map(t => {
                 const isSelected = topicId === t.id
@@ -133,8 +134,8 @@ export default function ComposePage() {
                     onClick={() => setTopicId(t.id)}
                     className={`text-xs px-3.5 py-2 rounded-full border transition-all duration-200 whitespace-nowrap cursor-pointer ${
                       isSelected
-                        ? "bg-[#EFF6FF] border-[#2563EB] text-[#2563EB] font-semibold shadow-sm"
-                        : "bg-white border-[#E2E8F0] text-[#475569] hover:border-[#2563EB]/40 hover:text-[#2563EB]"
+                        ? "bg-accent-soft border-accent text-accent font-semibold shadow-sm"
+                        : "bg-surface border-border-app text-text-secondary hover:border-accent/40 hover:text-accent"
                     }`}
                   >
                     {t.name}
@@ -144,19 +145,21 @@ export default function ComposePage() {
             </div>
           </div>
 
-          {/* Large text block: min-h-[200px] */}
+          {/* Textarea */}
+          <label htmlFor="compose-content" className="sr-only">Post content</label>
           <textarea
+            id="compose-content"
             value={content}
             onChange={handleChange}
             onPaste={handlePaste}
             placeholder="What do you know that others should trust?"
-            className="w-full text-[#0F172A] text-sm resize-none outline-none placeholder-slate-400 min-h-[200px] bg-white border border-[#F1F5F9] rounded-2xl p-4 focus:border-[#2563EB]/40 transition-colors duration-200"
+            className="w-full text-text-primary text-sm resize-none outline-none placeholder-text-tertiary min-h-[200px] bg-surface border border-border-app rounded-2xl p-4 focus:border-accent/40 transition-colors duration-200"
             maxLength={maxLength}
           />
 
           {/* Indicators Footer */}
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#F1F5F9]">
-            {/* Smoothly animated human score badge */}
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border-app">
+            {/* Smoothly animated human score badge — semantic status colors */}
             <div className={`flex items-center gap-2 text-xs px-3.5 py-2 rounded-full border transition-all duration-500 ease-in-out ${scoreBg}`}>
               <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 ${dotColor}`} />
               <span className={`font-semibold transition-colors duration-500 ${scoreColor}`}>
@@ -172,7 +175,7 @@ export default function ComposePage() {
                     cx="18"
                     cy="18"
                     r={radius}
-                    className="stroke-[#F1F5F9]"
+                    className="stroke-border-app"
                     strokeWidth={strokeWidth}
                     fill="transparent"
                   />
@@ -185,7 +188,7 @@ export default function ComposePage() {
                         ? "stroke-[#DC2626]"
                         : characterCount >= 400
                         ? "stroke-[#B45309]"
-                        : "stroke-[#2563EB]"
+                        : "stroke-accent"
                     }`}
                     strokeWidth={strokeWidth}
                     fill="transparent"
@@ -194,7 +197,7 @@ export default function ComposePage() {
                     strokeLinecap="round"
                   />
                 </svg>
-                <span className="absolute text-[9px] font-bold text-[#475569]">
+                <span className="absolute text-[9px] font-bold text-text-secondary">
                   {maxLength - characterCount}
                 </span>
               </div>
@@ -203,11 +206,11 @@ export default function ComposePage() {
 
           {/* Full-width Submit button when content exists */}
           {content.trim() && (
-            <div className="mt-4 pt-4 border-t border-[#F1F5F9] animate-fade-in">
+            <div className="mt-4 pt-4 border-t border-border-app animate-fade-in">
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm py-3 rounded-xl font-semibold shadow-md shadow-blue-500/15 hover:shadow-lg transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-accent hover:bg-accent-hover text-white text-sm py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
               >
                 {submitting ? (
                   <>
