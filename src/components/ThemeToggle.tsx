@@ -16,8 +16,11 @@ export default function ThemeToggle() {
 
   // Read the applied class after mount (set by the inline script in layout.tsx)
   useEffect(() => {
-    setMounted(true)
-    setIsDark(document.documentElement.classList.contains("dark"))
+    const isDarkTheme = document.documentElement.classList.contains("dark")
+    setTimeout(() => {
+      setMounted(true)
+      setIsDark(isDarkTheme)
+    }, 0)
   }, [])
 
   function toggle() {
