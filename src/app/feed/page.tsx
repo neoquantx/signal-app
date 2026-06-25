@@ -10,22 +10,18 @@ export default async function FeedPage() {
   const userId = (session.user as { id?: string }).id ?? ""
 
   return (
-    <div className="min-h-screen bg-app">
+    <>
       <Navbar />
-      {/*
-        Task 4: grid stacks on mobile — feed first, algo panel below.
-        On lg+ it shows side-by-side: [feed | 300px algo panel].
-      */}
-      <main className="max-w-5xl mx-auto pt-24 px-4 pb-16 animate-fade-in">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 mt-6">
-          <div>
+      <main className="flex-1 overflow-y-auto pb-20 pt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 items-start justify-center">
+          <div className="flex-1 w-full max-w-2xl mx-auto lg:mx-0 space-y-6">
             <FeedClient currentUserId={userId} />
           </div>
-          <div className="relative">
+          <div className="w-full lg:w-80 space-y-6 hidden lg:block sticky top-24">
             <AlgoPanel />
           </div>
         </div>
       </main>
-    </div>
+    </>
   )
 }
