@@ -25,6 +25,13 @@ export interface Post {
   humanScore: number
   trustCount: number
   createdAt: string
+  authorHandle?: string
+  externalUrl?: string
+  isRepost?: boolean
+  repostedBy?: string
+  likeCount?: number
+  repostCount?: number
+  replyCount?: number
 }
 
 export interface TrustRelationship {
