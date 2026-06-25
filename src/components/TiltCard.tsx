@@ -27,12 +27,16 @@ export default function TiltCard({
 }: TiltCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef<number | null>(null)
-  const [reducedMotion, setReducedMotion] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    }
+    return false
+  })
 
   // Check for reduced-motion preference once on mount
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
-    setReducedMotion(mq.matches)
     const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches)
     mq.addEventListener("change", handler)
     return () => mq.removeEventListener("change", handler)
