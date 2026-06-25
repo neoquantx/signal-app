@@ -2,79 +2,81 @@
 
 /* ============================================================
    SIGNAL DESIGN SYSTEM — Tailwind v4 CSS-based configuration
-   Dark mode: class-based (.dark on <html>)
    ============================================================ */
 
-/* ── Light-mode tokens (default) ──────────────────────────── */
-:root {
-  --bg: #FFF8EC;
-  --surface: #FFFFFF;
-  --surface-secondary: #F7EFE0;
-  --border: #DCCCAC;
-  --border-strong: #C9B690;
-  --text-primary: #2B331E;
-  --text-secondary: #5C6B4A;
-  --text-tertiary: #8B9A78;
-  --accent: #546B41;
-  --accent-hover: #455934;
-  --accent-soft: #E8EDE0;
-  --secondary-accent: #99AD7A;
-}
-
-/* ── Dark-mode tokens ─────────────────────────────────────── */
-:root.dark {
-  --bg: #12160D;
-  --surface: #1C2214;
-  --surface-secondary: #242C1B;
-  --border: #3A4630;
-  --border-strong: #4A5A3D;
-  --text-primary: #FFF8EC;
-  --text-secondary: #DCCCAC;
-  --text-tertiary: #99AD7A;
-  --accent: #99AD7A;
-  --accent-hover: #ADC08F;
-  --accent-soft: #2A331F;
-  --secondary-accent: #DCCCAC;
-}
-
-/* ── Tailwind v4 theme extension (CSS-in-theme approach) ─── */
 @theme inline {
-  /* Fonts */
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-on-error-container: #93000a;
+  --color-on-primary-fixed-variant: #2c28c8;
+  --color-surface-container-high: #e8e8e8;
+  --color-on-primary: #ffffff;
+  --color-inverse-surface: #2f3131;
+  --color-surface-container: #eeeeee;
+  --color-surface: #161b11;
+  --color-surface-glass: rgba(22, 27, 17, 0.7);
+  --color-on-surface-variant: #8b9a78;
+  --color-primary-fixed: #e1e0ff;
+  --color-tertiary-fixed-dim: #ffb68a;
+  --color-inverse-primary: #c1c1ff;
+  --color-outline-variant: #3a4630;
+  --color-on-tertiary-fixed-variant: #743500;
+  --color-primary-container: #5e60f6;
+  --color-on-tertiary-fixed: #321300;
+  --color-surface-bright: #161b11;
+  --color-surface-variant: #1c2214;
+  --color-on-primary-fixed: #07006c;
+  --color-secondary-container: #d8e0ee;
+  --color-on-secondary-fixed-variant: #3f4752;
+  --color-on-primary-container: #fefaff;
+  --color-surface-container-low: #1c2214;
+  --color-on-tertiary: #ffffff;
+  --color-secondary-fixed-dim: #bfc7d4;
+  --color-secondary-fixed: #dbe3f0;
+  --color-error: #ba1a1a;
+  --color-primary: #4444dc;
+  --color-on-error: #ffffff;
+  --color-surface-tint: #4748df;
+  --color-error-container: #ffdad6;
+  --color-tertiary-container: #ba5800;
+  --color-outline: #767587;
+  --color-on-surface: #fff8ec;
+  --color-on-background: #fff8ec;
+  --color-on-secondary: #ffffff;
+  --color-deep-slate: #252d37;
+  --color-inverse-on-surface: #f0f1f1;
+  --color-on-secondary-fixed: #141c26;
+  --color-surface-container-lowest: #12160d;
+  --color-tertiary-fixed: #ffdbc8;
+  --color-on-secondary-container: #5b636f;
+  --color-surface-container-highest: #1c2214;
+  --color-on-tertiary-container: #fffbfa;
+  --color-background: #0d1109;
+  --color-surface-dim: #1c2214;
+  --color-primary-fixed-dim: #c1c1ff;
+  --color-secondary: #575f6a;
+  --color-tertiary: #944500;
+  --color-accent-periwinkle: #5e60f6;
+  --color-accent-green: #a7c080;
+  --color-accent-cream: #fdfbf7;
 
-  /* Design-token colors → Tailwind utility classes */
-  --color-app:              var(--bg);
-  --color-surface:          var(--surface);
-  --color-surface-secondary: var(--surface-secondary);
-  --color-border-app:       var(--border);
-  --color-border-strong:    var(--border-strong);
-  --color-text-primary:     var(--text-primary);
-  --color-text-secondary:   var(--text-secondary);
-  --color-text-tertiary:    var(--text-tertiary);
-  --color-accent:           var(--accent);
-  --color-accent-hover:     var(--accent-hover);
-  --color-accent-soft:      var(--accent-soft);
-  --color-secondary-accent: var(--secondary-accent);
-  --color-accent-border:    var(--accent);
+  --radius: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+  --radius-full: 9999px;
 
-  /* Legacy aliases kept for backward compat */
-  --color-background:       var(--bg);
-  --color-foreground:       var(--text-primary);
+  --font-body: var(--font-inter), sans-serif;
+  --font-serif: var(--font-instrument), serif;
 }
 
-/* ── Smooth theme transition ─────────────────────────────── */
-html,
 body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: var(--font-body);
+}
+.font-serif {
+  font-family: var(--font-serif);
 }
 
-/* ── Base body styles ────────────────────────────────────── */
-body {
-  background: var(--bg);
-  color: var(--text-primary);
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  overflow-y: scroll;
+.card-initial {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 /* ── Scrollbar styling ───────────────────────────────────── */
@@ -86,40 +88,23 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--color-outline-variant);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-strong);
+  background: var(--color-outline);
 }
 
-/* ── Animations ──────────────────────────────────────────── */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Glassmorphism utilities */
+.glass-panel {
+  background: rgba(22, 27, 17, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
-
-.animate-fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes scaleIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.animate-scaleIn {
-  animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.dark-glass-panel {
+  background: rgba(26, 58, 42, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
