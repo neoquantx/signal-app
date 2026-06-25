@@ -9,20 +9,11 @@ export default async function ExplorePage() {
   const userId = (session.user as { id?: string }).id ?? ""
 
   return (
-    <div className="min-h-screen bg-app">
+    <>
       <Navbar />
-      <main className="max-w-2xl mx-auto pt-24 px-4 pb-16 animate-fade-in">
-        <div className="flex items-center justify-between mt-6 mb-5 gap-4 flex-wrap">
-          <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">Explore people</h1>
-            <p className="text-xs text-text-tertiary mt-1">Trust people on specific topics to build your network</p>
-          </div>
-          <span className="text-xs font-semibold text-accent bg-accent-soft px-3 py-1 rounded-full border border-accent/20 shadow-sm">
-            Verified Directory
-          </span>
-        </div>
+      <main className="max-w-2xl mx-auto pt-24 px-4 pb-16 animate-fade-in w-full">
         <ExploreClient currentUserId={userId} />
       </main>
-    </div>
+    </>
   )
 }
