@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import ThemeToggle from "@/components/ThemeToggle"
+import { Home, Search, Compass, Plus, Menu, X, LogOut } from "lucide-react"
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -12,98 +12,92 @@ export default function Navbar() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   const links = [
-    { href: "/feed", label: "Feed" },
-    { href: "/explore", label: "Explore" },
-    { href: "/discover", label: "Discover" },
-    { href: "/connect", label: "Connect" },
+    { href: "/feed", label: "Home", icon: Home },
+    { href: "/explore", label: "Explore", icon: Search },
+    { href: "/discover", label: "Discover", icon: Compass },
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-sm border-b border-border-app h-16 flex items-center px-4 sm:px-6 transition-all duration-300">
-      {/* Logo */}
-      <div className="flex items-center gap-2.5 flex-1">
-        <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-accent-soft">
-          <svg className="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 20A16 16 0 0 1 20 4" />
-            <path d="M4 15A11 11 0 0 1 15 4" />
-            <path d="M4 10A6 6 0 0 1 10 4" />
-            <circle cx="4" cy="4" r="1.5" fill="currentColor" />
-          </svg>
+    <header className="glass-panel sticky top-0 z-50 border-b border-white/10 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-accent-green flex items-center justify-center text-accent-cream font-serif text-xl border border-white/10">S</div>
+          <span className="font-serif text-2xl text-accent-green tracking-wide">Signal</span>
         </div>
-        <span className="font-semibold text-lg tracking-tight text-text-primary">Signal</span>
-      </div>
 
-      {/* Desktop nav links — hidden on mobile */}
-      <div className="hidden sm:flex items-center gap-6">
-        {links.map(l => (
+        {/* Desktop nav links */}
+        <nav className="hidden md:flex items-center gap-8">
+          {links.map((l) => {
+            const Icon = l.icon
+            const isActive = pathname === l.href
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={`font-medium flex items-center gap-2 transition-colors px-2 ${
+                  isActive
+                    ? "bg-black text-white px-4 py-1.5 rounded-full font-semibold shadow-sm"
+                    : "text-on-surface/70 hover:text-on-surface"
+                }`}
+              >
+                <Icon className={isActive ? "w-5 h-5" : "w-5 h-5"} /> {l.label}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Right side controls */}
+        <div className="flex items-center gap-4">
           <Link
-            key={l.href}
-            href={l.href}
-            className={`text-sm transition-colors duration-200 ${
-              pathname === l.href ? "text-accent font-medium" : "text-text-secondary hover:text-text-primary"
-            }`}
+            href="/compose"
+            className="hidden sm:flex bg-black text-white px-4 py-1.5 rounded-full font-medium text-sm hover:bg-opacity-90 active:scale-95 transition-all shadow-md items-center gap-1"
           >
-            {l.label}
+            <Plus className="w-4 h-4" /> Post
           </Link>
-        ))}
 
-        <Link
-          href="/compose"
-          className="flex items-center gap-1 bg-accent hover:bg-accent-hover text-white text-sm px-4 py-2 rounded-full transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          Post
-        </Link>
+          {session?.user && (
+            <div className="relative hidden sm:block">
+              <button
+                onClick={() => setMenuOpen((v) => !v)}
+                className="w-10 h-10 rounded-full bg-accent-green text-accent-cream flex items-center justify-center font-medium overflow-hidden border-2 border-white/20 cursor-pointer hover:ring-2 hover:ring-white/20 hover:ring-offset-2 transition-all focus:outline-none"
+              >
+                {session.user.image ? (
+                  <img src={session.user.image} alt="avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-lg">{session.user.name?.[0]?.toUpperCase() || "U"}</span>
+                )}
+              </button>
 
-        <ThemeToggle />
-
-        {session?.user && (
-          <div className="relative">
-            <button onClick={() => setMenuOpen(v => !v)} className="focus:outline-none hover:opacity-85 transition-opacity">
-              {session.user.image ? (
-                <img src={session.user.image} alt="avatar" className="w-8 h-8 rounded-full border border-border-app" />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-surface-secondary" />
-              )}
-            </button>
-
-            {menuOpen && (
-              <>
-                <button className="fixed inset-0 z-40 cursor-default" onClick={() => setMenuOpen(false)} aria-label="Close menu" />
-                <div className="absolute right-0 mt-2 w-52 bg-surface border border-border-app rounded-xl shadow-lg z-50 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-border-app">
-                    <p className="text-sm font-medium text-text-primary truncate">{session.user.name}</p>
-                    <p className="text-xs text-text-tertiary truncate">{session.user.email}</p>
+              {menuOpen && (
+                <>
+                  <button className="fixed inset-0 z-40 cursor-default" onClick={() => setMenuOpen(false)} aria-label="Close menu" />
+                  <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden text-on-surface">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-sm font-medium truncate">{session.user.name}</p>
+                      <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
+                    </div>
+                    <button
+                      onClick={() => signOut({ callbackUrl: "/login" })}
+                      className="flex items-center gap-2 w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" /> Log out
+                    </button>
                   </div>
-                  <Link href="/connect" onClick={() => setMenuOpen(false)} className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-surface-secondary transition-colors">
-                    Connect platforms
-                  </Link>
-                  <button onClick={() => signOut({ callbackUrl: "/login" })} className="block w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                    Log out
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-      </div>
+                </>
+              )}
+            </div>
+          )}
 
-      {/* Mobile right-side controls */}
-      <div className="flex sm:hidden items-center gap-2">
-        <ThemeToggle />
-        {/* Hamburger button */}
-        <button
-          aria-label="Toggle navigation menu"
-          aria-expanded={mobileNavOpen}
-          onClick={() => setMobileNavOpen(v => !v)}
-          className="w-9 h-9 flex flex-col items-center justify-center gap-1.5 rounded-lg hover:bg-surface-secondary transition-colors"
-        >
-          <span className={`block w-5 h-0.5 bg-text-primary rounded transition-all duration-200 ${mobileNavOpen ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`block w-5 h-0.5 bg-text-primary rounded transition-all duration-200 ${mobileNavOpen ? "opacity-0" : ""}`} />
-          <span className={`block w-5 h-0.5 bg-text-primary rounded transition-all duration-200 ${mobileNavOpen ? "-translate-y-2 -rotate-45" : ""}`} />
-        </button>
+          {/* Mobile hamburger button */}
+          <button
+            aria-label="Toggle navigation menu"
+            onClick={() => setMobileNavOpen((v) => !v)}
+            className="sm:hidden w-10 h-10 flex items-center justify-center text-on-surface hover:bg-black/5 rounded-full transition-colors"
+          >
+            {mobileNavOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile dropdown menu */}
@@ -114,43 +108,58 @@ export default function Navbar() {
             onClick={() => setMobileNavOpen(false)}
             aria-label="Close navigation menu"
           />
-          <div className="absolute top-16 left-0 right-0 bg-surface border-b border-border-app shadow-lg z-50 py-3 flex flex-col sm:hidden">
-            {links.map(l => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setMobileNavOpen(false)}
-                className={`px-6 py-3 text-sm transition-colors duration-200 ${
-                  pathname === l.href ? "text-accent font-semibold bg-accent-soft" : "text-text-secondary hover:text-text-primary hover:bg-surface-secondary"
-                }`}
-              >
-                {l.label}
-              </Link>
-            ))}
-            <div className="px-6 pt-2 pb-1 border-t border-border-app mt-2">
+          <div className="absolute top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-xl z-50 py-3 flex flex-col sm:hidden text-on-surface">
+            {links.map((l) => {
+              const Icon = l.icon
+              const isActive = pathname === l.href
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setMobileNavOpen(false)}
+                  className={`px-6 py-3 text-sm transition-colors duration-200 flex items-center gap-3 ${
+                    isActive ? "text-accent-green font-semibold bg-green-50" : "text-gray-600 hover:text-black hover:bg-gray-50"
+                  }`}
+                >
+                  <Icon className="w-5 h-5" /> {l.label}
+                </Link>
+              )
+            })}
+            <div className="px-6 pt-3 pb-1 border-t border-gray-100 mt-2">
               <Link
                 href="/compose"
                 onClick={() => setMobileNavOpen(false)}
-                className="flex items-center justify-center gap-1.5 bg-accent hover:bg-accent-hover text-white text-sm px-4 py-2.5 rounded-full transition-all duration-200 w-full"
+                className="flex items-center justify-center gap-1.5 bg-black hover:bg-opacity-90 text-white text-sm px-4 py-2.5 rounded-full transition-all duration-200 w-full"
               >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                New Post
+                <Plus className="w-4 h-4" /> New Post
               </Link>
             </div>
             {session?.user && (
-              <div className="px-6 pt-3 pb-2 border-t border-border-app mt-1">
-                <p className="text-sm font-medium text-text-primary truncate">{session.user.name}</p>
-                <p className="text-xs text-text-tertiary truncate mb-2">{session.user.email}</p>
-                <button onClick={() => signOut({ callbackUrl: "/login" })} className="text-xs text-red-500 hover:underline">
-                  Log out
+              <div className="px-6 pt-3 pb-2 border-t border-gray-100 mt-2">
+                <div className="flex items-center gap-3 mb-4">
+                   <div className="w-10 h-10 rounded-full bg-accent-green text-accent-cream flex items-center justify-center font-medium overflow-hidden">
+                    {session.user.image ? (
+                      <img src={session.user.image} alt="avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-lg">{session.user.name?.[0]?.toUpperCase() || "U"}</span>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-black truncate">{session.user.name}</p>
+                    <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium"
+                >
+                  <LogOut className="w-4 h-4" /> Log out
                 </button>
               </div>
             )}
           </div>
         </>
       )}
-    </nav>
+    </header>
   )
 }
