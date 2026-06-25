@@ -1,97 +1,125 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import PostCard from "./PostCard"
 import { Post } from "@/types"
+import type { MyFeedPost } from "@/app/api/bluesky-oauth/my-feed/route"
 
 export default function FeedClient({ currentUserId }: { currentUserId: string }) {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [loading, setLoading] = useState(true)
+  const [foryouPosts, setForyouPosts] = useState<Post[]>([])
+  const [followingPosts, setFollowingPosts] = useState<Post[]>([])
+  const [foryouLoading, setForyouLoading] = useState(true)
+  const [followingLoading, setFollowingLoading] = useState(false)
+  const [followingStatus, setFollowingStatus] = useState<{ checked: boolean; connected: boolean; handle?: string }>({
+    checked: false,
+    connected: false,
+  })
+  const [followingError, setFollowingError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<"foryou" | "following">("foryou")
   const [showNewPostsButton, setShowNewPostsButton] = useState(false)
 
-  useEffect(() => {
-    fetch("/api/users/sync", { method: "POST" }).catch(() => {})
-    fetchPosts()
+  const fetchForyouPosts = useCallback(() => {
+    setForyouLoading(true)
+    fetch("/api/posts")
+      .then(r => r.json())
+      .then(d => {
+        setForyouPosts(d.posts ?? [])
+        setForyouLoading(false)
+      })
+      .catch(() => setForyouLoading(false))
+  }, [])
+
+  const fetchFollowingPosts = useCallback(() => {
+    setFollowingLoading(true)
+    setFollowingError(null)
+    fetch("/api/bluesky-oauth/status")
+      .then(r => r.json())
+      .then((d: { connected: boolean; handle?: string }) => {
+        setFollowingStatus({ checked: true, connected: d.connected, handle: d.handle })
+        if (!d.connected) {
+          setFollowingLoading(false)
+          return
+        }
+        return fetch("/api/bluesky-oauth/my-feed")
+          .then(r => r.json())
+          .then((feed: { posts: MyFeedPost[]; connected: boolean; error?: string }) => {
+            if (feed.error) {
+              setFollowingError(feed.error)
+            }
+            const mapped = (feed.posts ?? []).map((p: MyFeedPost) => ({
+              id: p.id,
+              authorId: `bluesky:${p.authorHandle}`,
+              authorName: p.authorName,
+              authorImage: p.authorImage,
+              content: p.content,
+              topicId: "bluesky",
+              topicName: "Bluesky",
+              humanScore: p.humanScore,
+              trustCount: p.likeCount ?? 0,
+              createdAt: p.createdAt,
+              authorHandle: p.authorHandle,
+              externalUrl: p.externalUrl,
+              isRepost: p.isRepost,
+              repostedBy: p.repostedBy,
+              likeCount: p.likeCount,
+              repostCount: p.repostCount,
+              replyCount: p.replyCount,
+            }))
+            setFollowingPosts(mapped)
+            setFollowingLoading(false)
+          })
+      })
+      .catch(() => {
+        setFollowingStatus({ checked: true, connected: false })
+        setFollowingLoading(false)
+        setFollowingError("Failed to fetch timeline status.")
+      })
   }, [])
 
   useEffect(() => {
-    // Show floating button after 30 seconds
+    fetch("/api/users/sync", { method: "POST" }).catch(() => {})
+    const timer = setTimeout(() => {
+      fetchForyouPosts()
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [fetchForyouPosts])
+
+  useEffect(() => {
+    if (activeTab === "following") {
+      const timer = setTimeout(() => {
+        fetchFollowingPosts()
+      }, 0)
+      return () => clearTimeout(timer)
+    }
+  }, [activeTab, fetchFollowingPosts])
+
+  const postsDependency = activeTab === "foryou" ? foryouPosts : followingPosts
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       setShowNewPostsButton(true)
     }, 30000)
 
     return () => clearTimeout(timer)
-  }, [posts]) // Reset if posts refetched
-
-  function fetchPosts() {
-    fetch("/api/posts")
-      .then(r => r.json())
-      .then(d => {
-        setPosts(d.posts ?? [])
-        setLoading(false)
-      })
-  }
+  }, [postsDependency])
 
   function handleRefresh() {
     setShowNewPostsButton(false)
-    setLoading(true)
-    fetchPosts()
+    if (activeTab === "foryou") {
+      fetchForyouPosts()
+    } else {
+      fetchFollowingPosts()
+    }
   }
 
-  if (loading) return (
-    <div className="space-y-4">
-      {/* Header Skeleton */}
-      <div className="flex items-center justify-between mb-2 animate-pulse">
-        <div className="h-7 bg-surface-secondary rounded-lg w-28" />
-      </div>
-      
-      {/* Tab Switcher Skeleton */}
-      <div className="border-b border-border-app pb-3 flex justify-between items-center animate-pulse">
-        <div className="flex gap-6">
-          <div className="h-5 bg-surface-secondary rounded-md w-16" />
-          <div className="h-5 bg-surface-secondary rounded-md w-16" />
-        </div>
-        <div className="h-3.5 bg-surface-secondary rounded-md w-40" />
-      </div>
-
-      {/* Feed List Skeleton */}
-      <div className="space-y-4">
-        {[1, 2, 3].map(i => (
-          <div key={i} className="bg-surface rounded-3xl p-6 animate-pulse flex items-start gap-4">
-            {/* Avatar skeleton */}
-            <div className="w-10 h-10 bg-surface-secondary rounded-full flex-shrink-0" />
-            
-            {/* Content lines skeleton */}
-            <div className="flex-1 space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="h-4 bg-surface-secondary rounded w-1/4" />
-                <div className="h-3 bg-surface-secondary rounded w-12" />
-                <div className="h-5 bg-surface-secondary rounded-full w-24" />
-              </div>
-              <div className="h-5 bg-surface-secondary rounded-full w-20" />
-              <div className="space-y-2">
-                <div className="h-3.5 bg-surface-secondary rounded w-full" />
-                <div className="h-3.5 bg-surface-secondary rounded w-4/5" />
-              </div>
-              <div className="bg-surface-secondary border border-border-app rounded-xl p-3.5 space-y-2">
-                <div className="h-3 bg-surface-secondary rounded w-24" />
-                <div className="h-3.5 bg-surface-secondary rounded w-3/5" />
-              </div>
-              <div className="h-8 bg-surface-secondary rounded-full w-28" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+  const isLoading = activeTab === "foryou" ? foryouLoading : followingLoading
+  const currentPosts = activeTab === "foryou" ? foryouPosts : followingPosts
 
   return (
-    <div className="relative">
-      {/* Floating "New posts available" Button */}
+    <div className="relative space-y-6">
       {showNewPostsButton && (
         <button
           onClick={handleRefresh}
-          className="fixed top-24 left-1/2 -translate-x-1/2 bg-accent text-white px-5 py-2.5 rounded-full shadow-lg text-xs font-semibold flex items-center gap-1.5 hover:bg-accent-hover hover:scale-105 active:scale-95 transition-all duration-200 z-40 animate-bounce cursor-pointer"
+          className="fixed top-24 left-1/2 -translate-x-1/2 bg-accent-green text-white px-5 py-2.5 rounded-full shadow-lg text-xs font-semibold flex items-center gap-1.5 hover:bg-opacity-90 transition-all duration-200 z-40 animate-bounce cursor-pointer"
         >
           <svg className="w-3.5 h-3.5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
             <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -100,49 +128,74 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
         </button>
       )}
 
-      {/* Header title */}
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">Your feed</h1>
-      </div>
-
-      {/* Tab Switcher */}
-      <div className="border-b border-border-app mb-5 flex items-center justify-between">
-        <div className="flex gap-6">
+      {/* Header and Tabs */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-extrabold tracking-tight text-white drop-shadow-sm mb-2">Your Feed</h1>
+        <p className="text-white/80 text-sm font-medium">Ranked by trust · human-verified</p>
+        <div className="flex gap-3 mt-6">
           <button
             onClick={() => setActiveTab("foryou")}
-            className={`pb-3 text-sm font-semibold transition-all relative cursor-pointer ${
-              activeTab === "foryou" ? "text-accent" : "text-text-secondary hover:text-text-primary"
+            className={`text-sm px-6 py-2 rounded-full transition-all cursor-pointer ${
+              activeTab === "foryou"
+                ? "font-semibold bg-accent-green text-[#12160d] shadow-lg border border-white/20"
+                : "font-medium glass-panel text-accent-green border border-white/30 hover:bg-white/10"
             }`}
           >
             For you
-            {activeTab === "foryou" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full animate-scaleIn" />
-            )}
           </button>
           <button
             onClick={() => setActiveTab("following")}
-            className={`pb-3 text-sm font-semibold transition-all relative cursor-pointer ${
-              activeTab === "following" ? "text-accent" : "text-text-secondary hover:text-text-primary"
+            className={`text-sm px-6 py-2 rounded-full transition-all cursor-pointer ${
+              activeTab === "following"
+                ? "font-semibold bg-accent-green text-[#12160d] shadow-lg border border-white/20"
+                : "font-medium glass-panel text-accent-green border border-white/30 hover:bg-white/10"
             }`}
           >
             Following
-            {activeTab === "following" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full animate-scaleIn" />
-            )}
           </button>
         </div>
-        <span className="text-xs text-text-tertiary pb-3">Ranked by trust · human-verified</span>
       </div>
 
-      {/* Unified Feed Container with Dividers */}
-      {posts.length === 0 ? (
-        <div className="bg-surface rounded-3xl border border-border-app p-12 text-center shadow-sm animate-scaleIn">
-          <p className="text-sm font-medium text-text-secondary mb-1">No posts yet</p>
-          <p className="text-xs text-text-tertiary">Be the first to post something trustworthy</p>
+      {isLoading ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="glass-panel rounded-2xl p-6 animate-pulse h-40" />
+          ))}
+        </div>
+      ) : activeTab === "following" && !followingStatus.connected ? (
+        <div className="glass-panel rounded-[32px] p-10 text-center flex flex-col items-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-accent-green/10 flex items-center justify-center text-3xl">🦋</div>
+          <div>
+            <p className="text-lg font-medium text-white mb-2">Connect your Bluesky account</p>
+            <p className="text-sm text-on-surface-variant max-w-sm mx-auto">
+              See your real feed from people you follow, scored by Signal for authenticity — no hidden algorithm.
+            </p>
+          </div>
+          <a href="/connect" className="mt-2 text-sm px-6 py-3 rounded-full bg-accent-green text-[#12160d] font-semibold hover:bg-opacity-95 transition-all shadow-md cursor-pointer">
+            Connect Bluesky →
+          </a>
+        </div>
+      ) : activeTab === "following" && followingError && currentPosts.length === 0 ? (
+        <div className="glass-panel rounded-[32px] p-10 text-center">
+          <p className="text-sm text-on-surface-variant mb-4">{followingError}</p>
+          <a href="/connect" className="text-sm text-accent-green font-medium hover:underline cursor-pointer">
+            Reconnect your Bluesky account →
+          </a>
+        </div>
+      ) : currentPosts.length === 0 ? (
+        <div className="glass-panel rounded-[32px] p-20 text-center">
+          <p className="text-lg font-medium text-white mb-2">
+            {activeTab === "foryou" ? "No posts yet" : "No timeline posts found"}
+          </p>
+          <p className="text-sm text-on-surface-variant">
+            {activeTab === "foryou" 
+              ? "Be the first to post something trustworthy" 
+              : "Follow some accounts on Bluesky to see your feed here."}
+          </p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {posts.map((post, i) => (
+        <div className="space-y-6">
+          {currentPosts.map((post, i) => (
             <div 
               key={post.id} 
               className="animate-fade-in" 
