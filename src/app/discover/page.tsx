@@ -8,15 +8,13 @@ export default async function DiscoverPage() {
   if (!session) redirect("/login")
 
   return (
-    <div className="min-h-screen bg-app">
+    <>
       <Navbar />
-      <main className="max-w-6xl mx-auto pt-20 px-4 pb-10">
-        <div className="mb-6 mt-6">
-          <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">Discover</h1>
-          <p className="text-xs text-text-tertiary mt-2">Real posts from the open web, scored for authenticity by Signal</p>
+      <main className="flex-1 overflow-y-auto pb-20 pt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <DiscoverClient />
         </div>
-        <DiscoverClient />
       </main>
-    </div>
+    </>
   )
 }
