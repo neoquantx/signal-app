@@ -10,7 +10,7 @@ export default async function DiscoverPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 overflow-y-auto pb-20 pt-20">
+      <main className="flex-1 pb-20 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <DiscoverClient />
         </div>
