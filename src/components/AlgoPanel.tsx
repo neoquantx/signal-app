@@ -40,18 +40,18 @@ export default function AlgoPanel() {
 
   return (
     <>
-      <div className="glass-panel rounded-2xl p-5 shadow-sm mb-6">
-        <p className="text-white/90 leading-relaxed text-[15px]">
+      <div className="glass-panel p-5 mb-6">
+        <p className="text-text-primary leading-relaxed text-[15px]">
           {prefs.trustChainWeight}% of your feed comes from people you trust directly, {prefs.topicRelevanceWeight}% matches topics you follow, and {prefs.recencyWeight}% favors what&apos;s recent.
         </p>
       </div>
 
-      <div className="dark-glass-panel rounded-2xl p-6 text-accent-cream shadow-xl">
+      <div className="glass-panel p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-serif text-2xl tracking-wide">Your Algorithm</h2>
-          <Settings2 className="w-5 h-5 text-white/70" />
+          <h2 className="font-serif text-2xl tracking-wide text-text-primary">Your Algorithm</h2>
+          <Settings2 className="w-5 h-5 text-text-secondary" />
         </div>
-        <p className="text-white/80 text-sm mb-6 leading-relaxed">
+        <p className="text-text-secondary text-sm mb-6 leading-relaxed">
           You control what you see. Adjust the weights to shape your feed.
         </p>
 
@@ -74,7 +74,7 @@ export default function AlgoPanel() {
         </div>
 
         {total !== 100 && (
-          <p className="text-xs text-yellow-300 bg-yellow-900/40 border border-yellow-500/30 rounded-xl px-3 py-2.5 mt-5 font-medium animate-fadeIn">
+          <p className="text-xs text-status-error bg-status-error/10 border border-status-error/30 rounded-xl px-3 py-2.5 mt-5 font-medium animate-fadeIn">
             Weights add up to {total}% — adjust to reach 100%
           </p>
         )}
@@ -82,17 +82,17 @@ export default function AlgoPanel() {
         <button
           onClick={handleSave}
           disabled={saving || total !== 100}
-          className="w-full mt-6 bg-accent-green hover:bg-opacity-90 text-white text-sm py-3 rounded-full font-semibold disabled:opacity-40 transition-all cursor-pointer shadow-md"
+          className="w-full mt-6 btn-primary py-3 disabled:opacity-40 transition-all cursor-pointer shadow-sm"
         >
           {saving ? "Saving..." : saved ? "✓ Saved" : "Save algorithm"}
         </button>
 
-        <div className="mt-6 pt-5 border-t border-white/10">
-          <p className="text-[11px] font-bold text-white/60 uppercase tracking-widest mb-3">Algorithm promise</p>
+        <div className="mt-6 pt-5 border-t border-surface-border">
+          <p className="text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-3">Algorithm promise</p>
           <div className="space-y-2.5">
             {["No ads, ever", "No paid amplification", "No rage-bait signals", "No hidden ranking"].map(p => (
-              <div key={p} className="flex items-center gap-2 text-xs text-white/80">
-                <CheckCircle2 className="w-3.5 h-3.5 text-accent-green" />
+              <div key={p} className="flex items-center gap-2 text-xs text-text-primary">
+                <CheckCircle2 className="w-3.5 h-3.5 text-brand-primary" />
                 <span className="font-medium">{p}</span>
               </div>
             ))}
@@ -108,14 +108,14 @@ function SliderRow({ label, value, onChange }: {
 }) {
   return (
     <div>
-      <div className="flex justify-between text-xs mb-2 text-white/90">
+      <div className="flex justify-between text-xs mb-2 text-text-primary">
         <span>{label}</span>
         <span className="font-semibold tabular-nums">{value}%</span>
       </div>
       <input
         type="range" min={0} max={100} value={value}
         onChange={e => onChange(Number(e.target.value))}
-        className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-white"
+        className="w-full h-1.5 bg-surface-border rounded-lg appearance-none cursor-pointer accent-brand-primary"
       />
     </div>
   )
