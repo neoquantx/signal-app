@@ -22,27 +22,27 @@ export default function LoginPage() {
 
   return (
     <div className="h-screen w-full flex items-center justify-center p-4 overflow-hidden relative">
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(138,43,226,0.08)_0%,transparent_70%)]" />
+      <div className="absolute inset-0 z-0 bg-background" />
       <div className="relative z-10 w-full max-w-[480px] px-6 card-initial" id="login-card">
-        <div className="glass-panel rounded-[2.5rem] p-12 text-center relative overflow-hidden">
+        <div className="glass-panel rounded-[2.5rem] p-12 text-center relative overflow-hidden shadow-sm border border-surface-border bg-surface-elevated">
           {/* Subtle top glow inside the card */}
-          <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-brand-primary to-transparent opacity-50" />
+          <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-brand-primary to-transparent opacity-20" />
           
           <div className="relative mx-auto mb-8 flex items-center justify-center w-24 h-24">
-            <div className="absolute inset-0 rounded-full bg-brand-primary/20 animate-ping" style={{ animationDuration: '3s' }}></div>
-            <div className="absolute inset-2 rounded-full bg-brand-secondary/20 animate-pulse" style={{ animationDuration: '2s' }}></div>
-            <div className="relative z-10 w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center text-white font-serif text-3xl shadow-[0_0_20px_rgba(138,43,226,0.5)]">
+            <div className="absolute inset-0 rounded-full bg-brand-primary/10 animate-ping" style={{ animationDuration: '3s' }}></div>
+            <div className="absolute inset-2 rounded-full bg-brand-secondary/10 animate-pulse" style={{ animationDuration: '2s' }}></div>
+            <div className="relative z-10 w-16 h-16 rounded-full overflow-hidden bg-brand-primary flex items-center justify-center text-white font-serif text-3xl shadow-sm">
               S
             </div>
           </div>
-          <h1 className="text-6xl font-serif text-white mb-4 tracking-tight drop-shadow-lg">Signal</h1>
+          <h1 className="text-6xl font-serif text-text-primary mb-4 tracking-tight drop-shadow-sm">Signal</h1>
           <p className="text-text-secondary text-lg mb-12 font-body leading-relaxed font-light">
-            Social media built on <span className="gradient-text font-semibold">trust</span>, not attention
+            Social media built on <span className="text-brand-primary font-semibold">trust</span>, not attention
           </p>
           <div className="space-y-5">
             <button
               onClick={() => signIn("google", { callbackUrl: "/connect" })}
-              className="w-full bg-surface-glass border border-surface-border text-white rounded-2xl py-4 px-6 text-base font-medium hover:bg-surface-glass-hover hover:border-surface-border-hover active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 shadow-lg group cursor-pointer"
+              className="w-full bg-surface-base border border-surface-border text-text-primary rounded-2xl py-4 px-6 text-base font-medium hover:bg-surface-glass-hover hover:border-surface-border active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 shadow-sm group cursor-pointer"
             >
               <svg className="w-6 h-6 transform group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24">
                 <path
@@ -66,7 +66,7 @@ export default function LoginPage() {
             </button>
             <button
               onClick={() => signIn("github", { callbackUrl: "/connect" })}
-              className="w-full bg-surface-base border border-surface-border text-white rounded-2xl py-4 px-6 text-base font-medium hover:bg-surface-elevated hover:border-surface-border-hover active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 shadow-lg group cursor-pointer"
+              className="w-full bg-surface-base border border-surface-border text-text-primary rounded-2xl py-4 px-6 text-base font-medium hover:bg-surface-glass-hover hover:border-surface-border active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 shadow-sm group cursor-pointer"
             >
               <svg className="w-6 h-6 transform group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"></path>
@@ -77,7 +77,7 @@ export default function LoginPage() {
           <p className="text-sm text-text-tertiary mt-12 font-body font-light">
             By continuing, you agree to Signal&apos;s{" "}
             <a
-              className="text-text-secondary underline underline-offset-4 hover:text-white transition-colors"
+              className="text-text-secondary underline underline-offset-4 hover:text-text-primary transition-colors"
               href="#"
             >
               terms of service
