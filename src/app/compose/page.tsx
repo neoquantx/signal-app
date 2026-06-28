@@ -98,32 +98,32 @@ export default function ComposePage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 flex items-center justify-center py-12 px-4 animate-fade-in mt-16 min-h-[calc(100vh-64px)]">
-        <div className="w-full max-w-2xl dark-glass-panel rounded-3xl p-8 shadow-2xl transition-all duration-300 border border-white/10">
+      <main className="flex-1 flex items-center justify-center py-12 px-4 mt-16 min-h-[calc(100vh-64px)]">
+        <div className="w-full max-w-2xl bg-surface-elevated rounded-3xl p-8 shadow-sm transition-all duration-300 border border-surface-border">
           
           <div className="flex items-center gap-4 mb-6">
             {session?.user?.image ? (
-              <img src={session.user.image} className="w-12 h-12 rounded-full border border-white/20 shadow-sm object-cover" alt="avatar" />
+              <img src={session.user.image} className="w-12 h-12 rounded-full border border-surface-border shadow-sm object-cover" alt="avatar" />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-accent-green/30 border border-white/20 text-accent-cream flex items-center justify-center font-bold text-lg">
+              <div className="w-12 h-12 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary flex items-center justify-center font-bold text-lg">
                 {session?.user?.name?.charAt(0) ?? "U"}
               </div>
             )}
             <div>
-              <p className="text-base font-semibold text-accent-cream">{session?.user?.name}</p>
-              <p className="text-sm text-white/60">Drafting verified broadcast</p>
+              <p className="text-base font-semibold text-text-primary">{session?.user?.name}</p>
+              <p className="text-sm text-text-secondary">Drafting verified broadcast</p>
             </div>
           </div>
 
           <div className="mb-6">
-            <p className="text-sm font-medium text-white/80 mb-3">Topic area</p>
+            <p className="text-sm font-medium text-text-secondary mb-3">Topic area</p>
             <div className="mb-3 relative">
               <input
                 type="text"
                 value={topicSearch}
                 onChange={e => setTopicSearch(e.target.value)}
                 placeholder="Search topics or type your own to add..."
-                className="w-full text-sm px-4 py-2.5 rounded-full border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-accent-green/50 focus:outline-none focus:ring-2 focus:ring-accent-green/20 transition-all"
+                className="w-full text-sm px-4 py-2.5 rounded-full border border-surface-border bg-surface-base text-text-primary placeholder-text-tertiary focus:border-brand-primary/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all hover:bg-surface-glass-hover"
               />
             </div>
             
@@ -137,8 +137,8 @@ export default function ComposePage() {
                   }}
                   className={`text-sm px-4 py-2 rounded-full border transition-all duration-200 whitespace-nowrap cursor-pointer ${
                     selectedTopicId === "custom" && customTopicName === topicSearch.trim()
-                      ? "bg-accent-green/40 border-accent-green text-accent-cream font-medium shadow-sm"
-                      : "bg-white/5 border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+                      ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary font-medium shadow-sm"
+                      : "bg-surface-base border-surface-border text-text-secondary hover:bg-surface-glass-hover hover:text-text-primary"
                   }`}
                 >
                   + Add &quot;{topicSearch.trim()}&quot;
@@ -156,8 +156,8 @@ export default function ComposePage() {
                     }}
                     className={`text-sm px-4 py-2 rounded-full border transition-all duration-200 whitespace-nowrap cursor-pointer ${
                       isSelected
-                        ? "bg-accent-green/40 border-accent-green text-accent-cream font-medium shadow-sm"
-                        : "bg-white/5 border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+                        ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary font-medium shadow-sm"
+                        : "bg-surface-base border-surface-border text-text-secondary hover:bg-surface-glass-hover hover:text-text-primary"
                     }`}
                   >
                     {t.name}
@@ -174,25 +174,25 @@ export default function ComposePage() {
             onChange={handleChange}
             onPaste={handlePaste}
             placeholder="What do you know that others should trust?"
-            className="w-full text-accent-cream text-base resize-none outline-none placeholder-white/40 min-h-[240px] bg-black/20 border border-white/10 rounded-2xl p-5 focus:border-accent-green/50 focus:bg-black/30 transition-all duration-300 backdrop-blur-md"
+            className="w-full text-text-primary text-base resize-none outline-none placeholder-text-tertiary min-h-[240px] bg-surface-base border border-surface-border rounded-2xl p-5 focus:border-brand-primary/50 focus:bg-surface-glass-hover transition-all duration-300"
             maxLength={maxLength}
           />
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-6 pt-5 border-t border-white/10 gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-6 pt-5 border-t border-surface-border gap-4">
             <div className={`flex items-center gap-2 text-sm px-4 py-2 rounded-full border transition-all duration-500 ease-in-out ${
-              humanScore >= 90 ? "bg-accent-green/20 border-accent-green/40" : 
-              humanScore >= 70 ? "bg-yellow-500/20 border-yellow-500/40" : 
-              "bg-red-500/20 border-red-500/40"
+              humanScore >= 90 ? "bg-status-success/10 border-status-success/20" : 
+              humanScore >= 70 ? "bg-status-warning/10 border-status-warning/20" : 
+              "bg-status-error/10 border-status-error/20"
             }`}>
               <div className={`w-2 h-2 rounded-full transition-colors duration-500 ${
-                humanScore >= 90 ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" : 
-                humanScore >= 70 ? "bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]" : 
-                "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]"
+                humanScore >= 90 ? "bg-status-success shadow-[0_0_8px_rgba(34,197,94,0.3)]" : 
+                humanScore >= 70 ? "bg-status-warning shadow-[0_0_8px_rgba(245,158,11,0.3)]" : 
+                "bg-status-error shadow-[0_0_8px_rgba(239,68,68,0.3)]"
               }`} />
               <span className={`font-medium transition-colors duration-500 ${
-                humanScore >= 90 ? "text-green-400" : 
-                humanScore >= 70 ? "text-yellow-400" : 
-                "text-red-400"
+                humanScore >= 90 ? "text-status-success" : 
+                humanScore >= 70 ? "text-status-warning" : 
+                "text-status-error"
               }`}>
                 {humanScore}% human confidence
               </span>
@@ -203,15 +203,15 @@ export default function ComposePage() {
                 <svg className="w-10 h-10 transform -rotate-90">
                   <circle
                     cx="20" cy="20" r={radius}
-                    className="stroke-white/10"
+                    className="stroke-surface-border"
                     strokeWidth={strokeWidth} fill="transparent"
                   />
                   <circle
                     cx="20" cy="20" r={radius}
                     className={`transition-all duration-300 ${
-                      characterCount >= 470 ? "stroke-red-500" :
-                      characterCount >= 400 ? "stroke-yellow-500" :
-                      "stroke-accent-green"
+                      characterCount >= 470 ? "stroke-status-error" :
+                      characterCount >= 400 ? "stroke-status-warning" :
+                      "stroke-brand-primary"
                     }`}
                     strokeWidth={strokeWidth} fill="transparent"
                     strokeDasharray={circumference}
@@ -219,7 +219,7 @@ export default function ComposePage() {
                     strokeLinecap="round"
                   />
                 </svg>
-                <span className="absolute text-[10px] font-bold text-white/60">
+                <span className="absolute text-[10px] font-bold text-text-secondary">
                   {maxLength - characterCount}
                 </span>
               </div>
@@ -227,7 +227,7 @@ export default function ComposePage() {
               <button
                 onClick={handleSubmit}
                 disabled={submitting || !content.trim()}
-                className="bg-accent-cream text-accent-green px-6 py-2.5 rounded-full font-semibold hover:bg-opacity-90 active:scale-95 transition-all shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-brand-primary text-white px-6 py-2.5 rounded-full font-semibold hover:bg-opacity-90 active:scale-95 transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? "Publishing..." : "Post Signal"}
               </button>
