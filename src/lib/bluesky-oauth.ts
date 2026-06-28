@@ -35,6 +35,19 @@ import { getBlueskyOAuthKeyJwk } from "@/lib/secrets";
 import { blueskyStateStore, blueskySessionStore } from "@/lib/bluesky-oauth-store";
 import { getItem } from "@/lib/dynamo";
 
+/** Returns true for transient network errors worth retrying (e.g. GOAWAY, UND_ERR_SOCKET). */
+function isTransientError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  const msg = err.message + (err.cause instanceof Error ? " " + err.cause.message : "");
+  return (
+    msg.includes("GOAWAY") ||
+    msg.includes("UND_ERR_SOCKET") ||
+    msg.includes("fetch failed") ||
+    msg.includes("ECONNRESET") ||
+    msg.includes("ETIMEDOUT")
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Singleton cache
 // ---------------------------------------------------------------------------
@@ -175,10 +188,27 @@ export async function getUserBlueskyAgent(
     // 4. Build an Agent using the OAuthSession's fetchHandler
     //    OAuthSession.fetchHandler: (pathname, init?) => Promise<Response>
     //    Agent's FetchHandler type: (url: string, init?: RequestInit) => Promise<Response>
-    //    ASSUMPTION: OAuthSession.fetchHandler is compatible as a FetchHandler.
-    //    The fetchHandler on OAuthSession takes (pathname, init) and constructs the
-    //    full URL internally based on the PDS endpoint, which is what Agent expects.
-    const agent = new Agent(oauthSession.fetchHandler.bind(oauthSession));
+    //    We wrap this in a retry loop to handle HTTP/2 GOAWAY errors from Bluesky.
+    const baseFetchHandler = oauthSession.fetchHandler.bind(oauthSession);
+    const fetchHandlerWithRetry = async (url: string, init?: RequestInit) => {
+      const maxAttempts = 3;
+      let lastErr: unknown;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          return await baseFetchHandler(url, init);
+        } catch (err) {
+          lastErr = err;
+          if (!isTransientError(err) || attempt === maxAttempts) {
+            throw err;
+          }
+          console.warn(`[bluesky-oauth] fetch ${url} attempt ${attempt} failed (transient):`, err instanceof Error ? err.message : err);
+          await new Promise(r => setTimeout(r, attempt * 300));
+        }
+      }
+      throw lastErr;
+    };
+
+    const agent = new Agent(fetchHandlerWithRetry);
 
     return agent;
   } catch (err) {

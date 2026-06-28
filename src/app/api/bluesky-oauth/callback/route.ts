@@ -25,6 +25,31 @@ import { putItem } from "@/lib/dynamo";
 
 export const runtime = "nodejs";
 
+/** Returns true for transient network errors worth retrying (e.g. GOAWAY, UND_ERR_SOCKET). */
+function isTransientError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  const msg = err.message + (err.cause instanceof Error ? " " + err.cause.message : "");
+  return (
+    msg.includes("GOAWAY") ||
+    msg.includes("UND_ERR_SOCKET") ||
+    msg.includes("fetch failed") ||
+    msg.includes("ECONNRESET") ||
+    msg.includes("ETIMEDOUT")
+  );
+}
+
+/** Runs fn(), and if it throws a transient error retries once after a short delay. */
+async function retryOnTransient<T>(fn: () => Promise<T>, label: string): Promise<T> {
+  try {
+    return await fn();
+  } catch (err) {
+    if (!isTransientError(err)) throw err;
+    console.warn(`[bluesky-oauth] ${label} transient error, retrying in 500ms:`, err instanceof Error ? err.message : err);
+    await new Promise(r => setTimeout(r, 500));
+    return await fn();
+  }
+}
+
 export async function GET(request: NextRequest) {
   // 1. Require the Signal session so we know whose account to link
   const session = await auth();
@@ -57,10 +82,11 @@ export async function GET(request: NextRequest) {
   try {
     const client = await getBlueskyOAuthClient();
 
-    // 3. Exchange the authorization code for tokens.
+    // 3. Exchange the authorization code for tokens (with retry on transient errors).
     //    callback() validates state, does token exchange, stores session in DynamoDB.
-    const { session: oauthSession } = await client.callback(
-      request.nextUrl.searchParams
+    const { session: oauthSession } = await retryOnTransient(
+      () => client.callback(request.nextUrl.searchParams),
+      "callback()"
     );
 
     const did = oauthSession.did;
@@ -93,8 +119,8 @@ export async function GET(request: NextRequest) {
       linkedAt: new Date().toISOString(),
     });
 
-    // 6. Redirect to the connect page (success state)
-    return NextResponse.redirect(new URL("/connect", request.url));
+    // 6. Redirect to the feed page (success state)
+    return NextResponse.redirect(new URL("/feed", request.url));
   } catch (err) {
     console.error("[bluesky-oauth] callback exchange error:", err);
     return NextResponse.redirect(

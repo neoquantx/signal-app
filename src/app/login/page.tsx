@@ -8,11 +8,11 @@ export default function LoginPage() {
     if (card) {
       card.animate(
         [
-          { opacity: 0, transform: "translateY(20px)" },
-          { opacity: 1, transform: "translateY(0)" },
+          { opacity: 0, transform: "translateY(30px) scale(0.95)" },
+          { opacity: 1, transform: "translateY(0) scale(1)" },
         ],
         {
-          duration: 800,
+          duration: 1000,
           easing: "cubic-bezier(0.16, 1, 0.3, 1)",
           fill: "forwards",
         }
@@ -22,24 +22,29 @@ export default function LoginPage() {
 
   return (
     <div className="h-screen w-full flex items-center justify-center p-4 overflow-hidden relative">
-      <div className="relative z-10 w-full max-w-[440px] px-6 card-initial" id="login-card">
-        <div className="glass-panel rounded-[32px] shadow-2xl p-12 text-center">
-          <div className="relative mx-auto mb-6 flex items-center justify-center w-20 h-20">
-            <div className="absolute inset-0 rounded-full bg-accent-green/20 animate-ping"></div>
-            <div className="relative z-10 w-16 h-16 rounded-full overflow-hidden bg-accent-green flex items-center justify-center text-accent-cream font-serif text-3xl border border-white/10">
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(138,43,226,0.08)_0%,transparent_70%)]" />
+      <div className="relative z-10 w-full max-w-[480px] px-6 card-initial" id="login-card">
+        <div className="glass-panel rounded-[2.5rem] p-12 text-center relative overflow-hidden">
+          {/* Subtle top glow inside the card */}
+          <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-brand-primary to-transparent opacity-50" />
+          
+          <div className="relative mx-auto mb-8 flex items-center justify-center w-24 h-24">
+            <div className="absolute inset-0 rounded-full bg-brand-primary/20 animate-ping" style={{ animationDuration: '3s' }}></div>
+            <div className="absolute inset-2 rounded-full bg-brand-secondary/20 animate-pulse" style={{ animationDuration: '2s' }}></div>
+            <div className="relative z-10 w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center text-white font-serif text-3xl shadow-[0_0_20px_rgba(138,43,226,0.5)]">
               S
             </div>
           </div>
-          <h1 className="text-5xl font-serif text-white mb-4">Signal</h1>
-          <p className="text-white/80 text-lg mb-12 font-body leading-relaxed">
-            Social media built on trust, not attention
+          <h1 className="text-6xl font-serif text-white mb-4 tracking-tight drop-shadow-lg">Signal</h1>
+          <p className="text-text-secondary text-lg mb-12 font-body leading-relaxed font-light">
+            Social media built on <span className="gradient-text font-semibold">trust</span>, not attention
           </p>
-          <div className="space-y-4">
+          <div className="space-y-5">
             <button
               onClick={() => signIn("google", { callbackUrl: "/connect" })}
-              className="w-full bg-white/10 border border-white/20 text-white rounded-2xl py-4 px-6 text-base font-medium hover:bg-white/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-md group cursor-pointer"
+              className="w-full bg-surface-glass border border-surface-border text-white rounded-2xl py-4 px-6 text-base font-medium hover:bg-surface-glass-hover hover:border-surface-border-hover active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 shadow-lg group cursor-pointer"
             >
-              <svg className="w-6 h-6" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 transform group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                   fill="#4285F4"
@@ -61,18 +66,18 @@ export default function LoginPage() {
             </button>
             <button
               onClick={() => signIn("github", { callbackUrl: "/connect" })}
-              className="w-full bg-black/40 border border-white/10 text-white rounded-2xl py-4 px-6 text-base font-medium hover:bg-black/60 active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-md cursor-pointer"
+              className="w-full bg-surface-base border border-surface-border text-white rounded-2xl py-4 px-6 text-base font-medium hover:bg-surface-elevated hover:border-surface-border-hover active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 shadow-lg group cursor-pointer"
             >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 transform group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"></path>
               </svg>
               Continue with GitHub
             </button>
           </div>
-          <p className="text-sm text-white/60 mt-12 font-body">
+          <p className="text-sm text-text-tertiary mt-12 font-body font-light">
             By continuing, you agree to Signal&apos;s{" "}
             <a
-              className="text-white underline underline-offset-4 hover:text-accent-cream transition-colors"
+              className="text-text-secondary underline underline-offset-4 hover:text-white transition-colors"
               href="#"
             >
               terms of service

@@ -59,6 +59,10 @@ export default function DiscoverClient() {
   const [topicLoading, setTopicLoading] = useState(true)
   const [trustedHandles, setTrustedHandles] = useState<Record<string, boolean>>({})
 
+  // Free-text search state (By Topic tab only)
+  const [searchInput, setSearchInput] = useState("")
+  const [activeSearchQuery, setActiveSearchQuery] = useState<string | null>(null)
+
   // Your Network state
   const [networkStatus, setNetworkStatus] = useState<{
     checked: boolean
@@ -74,12 +78,15 @@ export default function DiscoverClient() {
     const timer = setTimeout(() => {
       setTopicLoading(true)
     }, 0)
-    fetch(`/api/discover?topic=${activeTopic}`)
+    const url = activeSearchQuery
+      ? `/api/discover?q=${encodeURIComponent(activeSearchQuery)}`
+      : `/api/discover?topic=${activeTopic}`
+    fetch(url)
       .then(r => r.json())
       .then(d => { setPosts(d.posts ?? []); setTopicLoading(false) })
       .catch(() => setTopicLoading(false))
     return () => clearTimeout(timer)
-  }, [activeTopic, activeTab])
+  }, [activeTopic, activeTab, activeSearchQuery])
 
   useEffect(() => {
     if (activeTab !== "network") return
@@ -193,10 +200,49 @@ export default function DiscoverClient() {
           </aside>
 
           <section className="space-y-6">
+            {/* Free-text search input — By Topic tab only */}
+            <form
+              onSubmit={e => {
+                e.preventDefault()
+                const q = searchInput.trim()
+                if (q) {
+                  setActiveSearchQuery(q)
+                } else {
+                  setActiveSearchQuery(null)
+                }
+              }}
+              className="flex gap-2"
+            >
+              <input
+                type="text"
+                value={searchInput}
+                onChange={e => setSearchInput(e.target.value)}
+                placeholder="Search any topic on Bluesky…"
+                className="flex-1 text-sm px-4 py-2.5 rounded-full border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-accent-green/50 focus:outline-none focus:ring-2 focus:ring-accent-green/20 transition-all"
+              />
+              <button
+                type="submit"
+                className="text-sm px-5 py-2.5 rounded-full bg-accent-green text-white font-semibold hover:bg-opacity-90 active:scale-95 transition-all shrink-0"
+              >
+                Search
+              </button>
+              {activeSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => { setActiveSearchQuery(null); setSearchInput("") }}
+                  className="text-sm px-4 py-2.5 rounded-full bg-white/10 text-white/70 hover:bg-white/20 font-medium transition-all shrink-0"
+                >
+                  ✕ Clear
+                </button>
+              )}
+            </form>
+
             <div className="flex items-center justify-between px-2">
               <div className="flex items-center gap-2">
                 <span className="flex h-2 w-2 rounded-full bg-blue-400 animate-pulse"></span>
-                <h2 className="text-sm font-bold text-white uppercase tracking-tight">Live from Bluesky · Scored by Signal</h2>
+                <h2 className="text-sm font-bold text-white uppercase tracking-tight">
+                  {activeSearchQuery ? `Search results for "${activeSearchQuery}"` : "Live from Bluesky · Scored by Signal"}
+                </h2>
               </div>
               <span className="text-[11px] font-medium text-white/60 hidden sm:block">Real posts, real authenticity check</span>
             </div>

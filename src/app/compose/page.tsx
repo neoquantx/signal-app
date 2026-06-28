@@ -24,9 +24,14 @@ export default function ComposePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [content, setContent] = useState("")
-  const [topicId, setTopicId] = useState("ai")
+  const [topicSearch, setTopicSearch] = useState("")
+  const [selectedTopicId, setSelectedTopicId] = useState("ai")
+  const [customTopicName, setCustomTopicName] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [humanScore, setHumanScore] = useState(100)
+
+  const filteredTopics = DEFAULT_TOPICS.filter(t => t.name.toLowerCase().includes(topicSearch.toLowerCase()))
+  const isExactMatch = DEFAULT_TOPICS.some(t => t.name.toLowerCase() === topicSearch.trim().toLowerCase())
 
   const typingEvents = useRef(0)
   const editCount = useRef(0)
@@ -61,12 +66,19 @@ export default function ComposePage() {
 
   async function handleSubmit() {
     if (!content.trim() || submitting) return
+    // Resolve topic for submission
+    let finalTopicId = selectedTopicId
+    let finalTopicName: string | undefined = undefined
+    if (customTopicName) {
+      finalTopicId = customTopicName.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-") || "custom"
+      finalTopicName = customTopicName
+    }
     setSubmitting(true)
     try {
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, topicId, humanScore }),
+        body: JSON.stringify({ content, topicId: finalTopicId, topicName: finalTopicName, humanScore }),
       })
       if (res.ok) router.push("/feed")
     } finally {
@@ -105,14 +117,43 @@ export default function ComposePage() {
 
           <div className="mb-6">
             <p className="text-sm font-medium text-white/80 mb-3">Topic area</p>
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
-              {DEFAULT_TOPICS.map(t => {
-                const isSelected = topicId === t.id
+            <div className="mb-3 relative">
+              <input
+                type="text"
+                value={topicSearch}
+                onChange={e => setTopicSearch(e.target.value)}
+                placeholder="Search topics or type your own to add..."
+                className="w-full text-sm px-4 py-2.5 rounded-full border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-accent-green/50 focus:outline-none focus:ring-2 focus:ring-accent-green/20 transition-all"
+              />
+            </div>
+            
+            <div className="flex gap-2 flex-wrap max-h-32 overflow-y-auto scrollbar-none">
+              {topicSearch.trim() && !isExactMatch && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCustomTopicName(topicSearch.trim())
+                    setSelectedTopicId("custom")
+                  }}
+                  className={`text-sm px-4 py-2 rounded-full border transition-all duration-200 whitespace-nowrap cursor-pointer ${
+                    selectedTopicId === "custom" && customTopicName === topicSearch.trim()
+                      ? "bg-accent-green/40 border-accent-green text-accent-cream font-medium shadow-sm"
+                      : "bg-white/5 border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  + Add &quot;{topicSearch.trim()}&quot;
+                </button>
+              )}
+              {filteredTopics.map(t => {
+                const isSelected = selectedTopicId === t.id && !customTopicName
                 return (
                   <button
                     key={t.id}
                     type="button"
-                    onClick={() => setTopicId(t.id)}
+                    onClick={() => {
+                      setSelectedTopicId(t.id)
+                      setCustomTopicName("")
+                    }}
                     className={`text-sm px-4 py-2 rounded-full border transition-all duration-200 whitespace-nowrap cursor-pointer ${
                       isSelected
                         ? "bg-accent-green/40 border-accent-green text-accent-cream font-medium shadow-sm"

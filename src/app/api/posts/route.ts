@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { content, topicId, humanScore } = await req.json()
+  const { content, topicId, topicName: topicNameFromBody, humanScore } = await req.json()
   if (!content || !topicId) return NextResponse.json({ error: "Missing fields" }, { status: 400 })
 
   const userId = (session.user as { id?: string }).id!
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     authorImage: session.user.image ?? "",
     content,
     topicId,
-    topicName: getTopicName(topicId),
+    topicName: topicNameFromBody ?? getTopicName(topicId),
     humanScore: Math.round(humanScore ?? 85),
     trustCount: 0,
     createdAt,

@@ -57,20 +57,17 @@ export default function AlgoPanel() {
 
         <div className="space-y-5">
           <SliderRow
-            labelLeft="Trust chain"
-            labelRight="Global Ideas"
+            label="Trust chain weight"
             value={prefs.trustChainWeight}
             onChange={v => handleChange("trustChainWeight", v)}
           />
           <SliderRow
-            labelLeft="Topic relevance"
-            labelRight="Discovery"
+            label="Topic relevance weight"
             value={prefs.topicRelevanceWeight}
             onChange={v => handleChange("topicRelevanceWeight", v)}
           />
           <SliderRow
-            labelLeft="Recency"
-            labelRight="Evergreen"
+            label="Recency weight"
             value={prefs.recencyWeight}
             onChange={v => handleChange("recencyWeight", v)}
           />
@@ -106,14 +103,14 @@ export default function AlgoPanel() {
   )
 }
 
-function SliderRow({ labelLeft, labelRight, value, onChange }: {
-  labelLeft: string; labelRight: string; value: number; onChange: (v: number) => void;
+function SliderRow({ label, value, onChange }: {
+  label: string; value: number; onChange: (v: number) => void;
 }) {
   return (
     <div>
       <div className="flex justify-between text-xs mb-2 text-white/90">
-        <span>{labelLeft}</span>
-        <span>{labelRight}</span>
+        <span>{label}</span>
+        <span className="font-semibold tabular-nums">{value}%</span>
       </div>
       <input
         type="range" min={0} max={100} value={value}
