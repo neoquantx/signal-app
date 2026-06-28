@@ -130,36 +130,30 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
       )}
 
       {/* Header and Tabs */}
-      <div className="mb-10 text-center fade-in-up">
-        <h1 className="text-5xl font-serif text-white tracking-tight drop-shadow-md mb-3">Your Feed</h1>
-        <p className="text-text-secondary text-base font-light">Ranked by <span className="font-semibold text-white">trust</span> · human-verified</p>
+      <div className="mb-10 text-center fade-in-up px-4">
+        <h1 className="text-4xl md:text-5xl font-serif text-text-primary tracking-tight mb-3">Your Feed</h1>
+        <p className="text-text-secondary text-sm md:text-base font-medium">Ranked by <span className="font-semibold text-text-primary">trust</span> · human-verified</p>
         
         <div className="flex justify-center mt-8">
-          <div className="flex gap-1 p-1.5 rounded-full bg-surface-glass border border-surface-border shadow-inner">
+          <div className="flex gap-1 p-1.5 rounded-full bg-surface-elevated border border-surface-border shadow-sm w-full sm:w-auto">
             <button
               onClick={() => setActiveTab("foryou")}
-              className={`text-sm px-8 py-2.5 rounded-full transition-all duration-300 cursor-pointer relative z-10 font-medium ${
+              className={`flex-1 sm:flex-none text-sm px-6 sm:px-8 py-2.5 rounded-full transition-all duration-300 cursor-pointer relative z-10 font-medium ${
                 activeTab === "foryou"
-                  ? "text-white shadow-md"
-                  : "text-text-secondary hover:text-white hover:bg-white/5"
+                  ? "bg-text-primary text-white shadow-sm"
+                  : "text-text-secondary hover:text-text-primary hover:bg-surface-glass-hover"
               }`}
             >
-              {activeTab === "foryou" && (
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-primary to-brand-accent rounded-full -z-10 shadow-lg" />
-              )}
               For you
             </button>
             <button
               onClick={() => setActiveTab("following")}
-              className={`text-sm px-8 py-2.5 rounded-full transition-all duration-300 cursor-pointer relative z-10 font-medium ${
+              className={`flex-1 sm:flex-none text-sm px-6 sm:px-8 py-2.5 rounded-full transition-all duration-300 cursor-pointer relative z-10 font-medium ${
                 activeTab === "following"
-                  ? "text-white shadow-md"
-                  : "text-text-secondary hover:text-white hover:bg-white/5"
+                  ? "bg-text-primary text-white shadow-sm"
+                  : "text-text-secondary hover:text-text-primary hover:bg-surface-glass-hover"
               }`}
             >
-              {activeTab === "following" && (
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-primary to-brand-accent rounded-full -z-10 shadow-lg" />
-              )}
               Following
             </button>
           </div>
@@ -167,64 +161,61 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
       </div>
 
       {isLoading ? (
-        <div className="space-y-6">
+        <div className="space-y-6 px-4 sm:px-0">
           {[1, 2, 3].map(i => (
-            <div key={i} className="glass-panel rounded-[2rem] p-6 h-48 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+            <div key={i} className="glass-panel p-6 h-48 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-surface-border to-transparent opacity-20 animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-full bg-surface-elevated animate-pulse" />
+                <div className="w-12 h-12 rounded-full bg-surface-border animate-pulse shrink-0" />
                 <div className="flex-1 space-y-3 py-1">
-                  <div className="h-4 bg-surface-elevated rounded w-1/3 animate-pulse" />
-                  <div className="h-3 bg-surface-elevated rounded w-1/4 animate-pulse" />
+                  <div className="h-4 bg-surface-border rounded w-1/3 animate-pulse" />
+                  <div className="h-3 bg-surface-border rounded w-1/4 animate-pulse" />
                 </div>
               </div>
               <div className="mt-6 space-y-3">
-                <div className="h-3 bg-surface-elevated rounded w-full animate-pulse" />
-                <div className="h-3 bg-surface-elevated rounded w-5/6 animate-pulse" />
+                <div className="h-3 bg-surface-border rounded w-full animate-pulse" />
+                <div className="h-3 bg-surface-border rounded w-5/6 animate-pulse" />
               </div>
             </div>
           ))}
         </div>
       ) : activeTab === "following" && !followingStatus.connected ? (
-        <div className="glass-panel rounded-[2.5rem] p-12 text-center flex flex-col items-center gap-5 fade-in-up shadow-xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-brand-secondary/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-primary/10 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none" />
-          
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 flex items-center justify-center text-4xl shadow-inner border border-surface-border group-hover:scale-110 transition-transform duration-500">
+        <div className="mx-4 sm:mx-0 glass-panel p-8 sm:p-12 text-center flex flex-col items-center gap-5 fade-in-up">
+          <div className="w-20 h-20 rounded-full bg-brand-primary/10 flex items-center justify-center text-4xl shrink-0">
             🦋
           </div>
           <div className="relative z-10">
-            <h3 className="text-2xl font-serif text-white mb-3">Connect your Bluesky</h3>
-            <p className="text-base text-text-secondary max-w-md mx-auto font-light leading-relaxed">
+            <h3 className="text-xl sm:text-2xl font-bold text-text-primary mb-2">Connect your Bluesky</h3>
+            <p className="text-sm sm:text-base text-text-secondary max-w-md mx-auto">
               See your real feed from people you follow, scored by Signal for authenticity — no hidden algorithm.
             </p>
           </div>
-          <a href="/connect" className="mt-4 btn-primary text-sm px-8 py-3.5 rounded-full inline-block shadow-lg">
+          <a href="/connect" className="mt-4 btn-primary text-sm px-8 py-3.5 rounded-full inline-block shadow-sm">
             Connect Account →
           </a>
         </div>
       ) : activeTab === "following" && followingError && currentPosts.length === 0 ? (
-        <div className="glass-panel rounded-[2.5rem] p-12 text-center fade-in-up border border-status-error/30 bg-status-error/5">
+        <div className="mx-4 sm:mx-0 glass-panel p-8 sm:p-12 text-center fade-in-up border border-status-error/30 bg-status-error/5">
           <div className="text-status-error text-3xl mb-4">⚠️</div>
-          <p className="text-base text-white/90 mb-6 font-medium">{followingError}</p>
-          <a href="/connect" className="text-sm text-brand-secondary font-semibold hover:text-white transition-colors cursor-pointer border border-brand-secondary/30 bg-brand-secondary/10 px-6 py-2.5 rounded-full">
+          <p className="text-sm sm:text-base text-text-primary mb-6 font-medium">{followingError}</p>
+          <a href="/connect" className="text-xs sm:text-sm text-brand-secondary font-semibold hover:text-brand-primary transition-colors cursor-pointer border border-brand-secondary/30 bg-brand-secondary/10 px-6 py-2.5 rounded-full block sm:inline-block">
             Reconnect Bluesky Account →
           </a>
         </div>
       ) : currentPosts.length === 0 ? (
-        <div className="glass-panel rounded-[2.5rem] p-16 text-center fade-in-up">
-          <div className="text-5xl mb-6 opacity-80">🍃</div>
-          <p className="text-2xl font-serif text-white mb-3 tracking-tight">
+        <div className="mx-4 sm:mx-0 glass-panel p-10 sm:p-16 text-center fade-in-up">
+          <div className="text-5xl mb-6 opacity-60">🍃</div>
+          <p className="text-xl sm:text-2xl font-bold text-text-primary mb-3">
             {activeTab === "foryou" ? "Nothing here yet" : "No timeline posts"}
           </p>
-          <p className="text-base text-text-secondary font-light">
+          <p className="text-base text-text-secondary">
             {activeTab === "foryou" 
               ? "Be the first to post something trustworthy." 
               : "Follow some accounts on Bluesky to see your feed here."}
           </p>
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {currentPosts.map((post, i) => (
             <div 
               key={post.id} 
