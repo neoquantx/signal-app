@@ -5,28 +5,28 @@
    ============================================================ */
 
 @theme inline {
-  --color-brand-primary: #8a2be2;
-  --color-brand-secondary: #00d2ff;
-  --color-brand-accent: #ff007f;
+  --color-brand-primary: #0085FF;
+  --color-brand-secondary: #006EDD;
+  --color-brand-accent: #00BAFF;
   
-  --color-surface-base: #050505;
-  --color-surface-elevated: #0a0a0a;
-  --color-surface-glass: rgba(15, 15, 20, 0.4);
-  --color-surface-glass-hover: rgba(25, 25, 30, 0.6);
-  --color-surface-border: rgba(255, 255, 255, 0.08);
-  --color-surface-border-hover: rgba(255, 255, 255, 0.15);
+  --color-surface-base: #F8F9FA;
+  --color-surface-elevated: #FFFFFF;
+  --color-surface-glass: #FFFFFF;
+  --color-surface-glass-hover: #F3F4F6;
+  --color-surface-border: #E5E7EB;
+  --color-surface-border-hover: #D1D5DB;
 
-  --color-text-primary: #ffffff;
-  --color-text-secondary: rgba(255, 255, 255, 0.6);
-  --color-text-tertiary: rgba(255, 255, 255, 0.4);
+  --color-text-primary: #0F1419;
+  --color-text-secondary: #536471;
+  --color-text-tertiary: #8B98A5;
 
-  --color-status-success: #10b981;
-  --color-status-error: #ef4444;
+  --color-status-success: #10B981;
+  --color-status-error: #EF4444;
 
-  --radius-sm: 0.75rem;
-  --radius: 1.5rem;
-  --radius-lg: 2rem;
-  --radius-xl: 3rem;
+  --radius-sm: 0.5rem;
+  --radius: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
   --radius-full: 9999px;
 
   --font-body: var(--font-inter), sans-serif;
@@ -52,8 +52,8 @@ body {
 
 /* ── Custom Scrollbar ───────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -66,107 +66,59 @@ body {
   background: var(--color-surface-border-hover);
 }
 
-/* ── Premium Glassmorphism ───────────────────────────────────── */
+/* ── Flat UI Panels ───────────────────────────────────── */
 .glass-panel {
-  background: var(--color-surface-glass);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: var(--color-surface-elevated);
   border: 1px solid var(--color-surface-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-panel:hover {
-  background: var(--color-surface-glass-hover);
-  border: 1px solid var(--color-surface-border-hover);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+  border-color: var(--color-surface-border-hover);
 }
 
 .dark-glass-panel {
-  background: rgba(5, 5, 5, 0.8);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
+  background: var(--color-surface-elevated);
   border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* ── Dynamic Gradients & Animations ───────────────────────────────────── */
-.gradient-text {
-  background: linear-gradient(135deg, var(--color-brand-secondary), var(--color-brand-primary), var(--color-brand-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 300% 300%;
-  animation: gradientFlow 6s ease infinite;
-}
-
+/* ── Utilities ───────────────────────────────────── */
 .bg-mesh-gradient {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  background: 
-    radial-gradient(circle at 15% 50%, rgba(138, 43, 226, 0.15), transparent 50%),
-    radial-gradient(circle at 85% 30%, rgba(0, 210, 255, 0.15), transparent 50%),
-    radial-gradient(circle at 50% 80%, rgba(255, 0, 127, 0.1), transparent 50%);
-  filter: blur(60px);
-  animation: bgPulse 15s ease-in-out infinite alternate;
+  /* Removed for light flat theme */
+  display: none;
 }
 
-@keyframes gradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes bgPulse {
-  0% { transform: scale(1) translate(0, 0); }
-  33% { transform: scale(1.1) translate(2%, -2%); }
-  66% { transform: scale(0.95) translate(-2%, 3%); }
-  100% { transform: scale(1) translate(0, 0); }
+.gradient-text {
+  color: var(--color-brand-primary);
 }
 
 /* ── Interactive Elements ───────────────────────────────────── */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-accent));
+  background-color: var(--color-brand-primary);
   color: white;
   border: none;
   font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, var(--color-brand-secondary), var(--color-brand-primary));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: -1;
-}
-
-.btn-primary:hover::before {
-  opacity: 1;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(138, 43, 226, 0.4);
+  background-color: var(--color-brand-secondary);
 }
 
 .btn-primary:active {
-  transform: translateY(1px);
+  transform: scale(0.98);
 }
 
 .fade-in-up {
-  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 0.4s ease-out forwards;
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
