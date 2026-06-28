@@ -41,10 +41,10 @@ type ActiveTab = "topic" | "network"
 
 function scoreColorClass(score: number) {
   return score >= 90
-    ? "text-green-700 bg-green-100 border-green-200"
+    ? "text-status-success bg-status-success/10 border-status-success/20"
     : score >= 70
-    ? "text-yellow-700 bg-yellow-100 border-yellow-200"
-    : "text-red-700 bg-red-100 border-red-200"
+    ? "text-yellow-600 bg-yellow-400/10 border-yellow-400/20"
+    : "text-status-error bg-status-error/10 border-status-error/20"
 }
 
 export default function DiscoverClient() {
@@ -128,25 +128,25 @@ export default function DiscoverClient() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-extrabold tracking-tight text-white drop-shadow-sm mb-2">Discover</h1>
-        <p className="text-white/80 text-sm font-medium">Real posts from the open web, scored for authenticity by Signal</p>
+        <h1 className="text-4xl font-extrabold tracking-tight text-text-primary mb-2">Discover</h1>
+        <p className="text-text-secondary text-sm font-medium">Real posts from the open web, scored for authenticity by Signal</p>
         <div className="flex gap-3 mt-6">
           <button
             onClick={() => setActiveTab("topic")}
-            className={`text-sm px-6 py-2 rounded-full transition-all ${
+            className={`text-sm px-6 py-2 rounded-full transition-all border ${
               activeTab === "topic"
-                ? "font-semibold bg-accent-green text-white shadow-lg border border-white/20"
-                : "font-medium glass-panel text-accent-green border border-white/30 hover:bg-white/40"
+                ? "font-semibold bg-text-primary text-white border-text-primary shadow-sm"
+                : "font-medium bg-surface-elevated text-text-secondary border-surface-border hover:bg-surface-glass-hover hover:text-text-primary"
             }`}
           >
             By Topic
           </button>
           <button
             onClick={() => setActiveTab("network")}
-            className={`text-sm px-6 py-2 rounded-full transition-all ${
+            className={`text-sm px-6 py-2 rounded-full transition-all border ${
               activeTab === "network"
-                ? "font-semibold bg-accent-green text-white shadow-lg border border-white/20"
-                : "font-medium glass-panel text-accent-green border border-white/30 hover:bg-white/40"
+                ? "font-semibold bg-text-primary text-white border-text-primary shadow-sm"
+                : "font-medium bg-surface-elevated text-text-secondary border-surface-border hover:bg-surface-glass-hover hover:text-text-primary"
             }`}
           >
             Your Network
@@ -155,19 +155,19 @@ export default function DiscoverClient() {
       </div>
 
       {activeTab === "topic" && (
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_320px] gap-8 items-start">
-          <aside className="glass-panel rounded-[24px] p-6 sticky top-8 max-h-[calc(100vh-120px)] overflow-y-auto scrollbar-none">
-            <h2 className="text-xs font-extrabold text-accent-green uppercase tracking-widest mb-4">Top Categories</h2>
+        <div className="flex flex-col lg:flex-row justify-center gap-8 items-start max-w-5xl mx-auto">
+          <aside className="w-full lg:w-[280px] shrink-0 glass-panel p-6 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-none shadow-sm rounded-3xl border border-surface-border bg-surface-elevated">
+            <h2 className="text-xs font-extrabold text-brand-primary uppercase tracking-widest mb-4">Top Categories</h2>
             
-            <div className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-4 border-b border-white/10">
+            <div className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-4 border-b border-surface-border">
               {Object.values(grouped).flat().map((t: Topic) => (
                 <button
                   key={t.id}
                   onClick={() => setActiveTopic(t.id)}
                   className={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap transition-colors flex-shrink-0 ${
                     activeTopic === t.id
-                      ? "bg-accent-green text-white font-medium"
-                      : "text-on-surface-variant bg-black/5 hover:text-accent-green"
+                      ? "bg-brand-primary text-white font-medium shadow-sm"
+                      : "text-text-secondary bg-surface-base hover:text-brand-primary"
                   }`}
                 >
                   {t.name}
@@ -177,8 +177,8 @@ export default function DiscoverClient() {
 
             <div className="hidden lg:block space-y-6">
               {categories.map((cat, i) => (
-                <div key={cat} className={i !== 0 ? "pt-6 border-t border-black/5" : ""}>
-                  <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-3 opacity-60">{cat}</p>
+                <div key={cat} className={i !== 0 ? "pt-6 border-t border-surface-border" : ""}>
+                  <p className="text-[11px] font-bold text-text-tertiary uppercase tracking-widest mb-3">{cat}</p>
                   <div className="space-y-1">
                     {grouped[cat].map((t: Topic) => (
                       <button
@@ -186,8 +186,8 @@ export default function DiscoverClient() {
                         onClick={() => setActiveTopic(t.id)}
                         className={`w-full text-left text-sm px-3 py-2.5 rounded-xl transition-all ${
                           activeTopic === t.id
-                            ? "bg-accent-green text-white font-semibold"
-                            : "text-on-surface-variant hover:bg-black/5 hover:text-accent-green"
+                            ? "bg-brand-primary text-white font-semibold shadow-sm"
+                            : "text-text-secondary hover:bg-surface-glass-hover hover:text-text-primary"
                         }`}
                       >
                         {t.name}
@@ -199,7 +199,7 @@ export default function DiscoverClient() {
             </div>
           </aside>
 
-          <section className="space-y-6">
+          <section className="flex-1 w-full max-w-2xl space-y-6">
             {/* Free-text search input — By Topic tab only */}
             <form
               onSubmit={e => {
@@ -218,11 +218,11 @@ export default function DiscoverClient() {
                 value={searchInput}
                 onChange={e => setSearchInput(e.target.value)}
                 placeholder="Search any topic on Bluesky…"
-                className="flex-1 text-sm px-4 py-2.5 rounded-full border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-accent-green/50 focus:outline-none focus:ring-2 focus:ring-accent-green/20 transition-all"
+                className="flex-1 text-sm px-4 py-2.5 rounded-full border border-surface-border bg-surface-elevated text-text-primary placeholder-text-tertiary focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all shadow-sm"
               />
               <button
                 type="submit"
-                className="text-sm px-5 py-2.5 rounded-full bg-accent-green text-white font-semibold hover:bg-opacity-90 active:scale-95 transition-all shrink-0"
+                className="btn-primary text-sm px-5 py-2.5 rounded-full shrink-0 shadow-sm"
               >
                 Search
               </button>
@@ -230,7 +230,7 @@ export default function DiscoverClient() {
                 <button
                   type="button"
                   onClick={() => { setActiveSearchQuery(null); setSearchInput("") }}
-                  className="text-sm px-4 py-2.5 rounded-full bg-white/10 text-white/70 hover:bg-white/20 font-medium transition-all shrink-0"
+                  className="text-sm px-4 py-2.5 rounded-full bg-surface-elevated text-text-secondary border border-surface-border hover:bg-surface-glass-hover hover:text-text-primary font-medium transition-all shrink-0 shadow-sm"
                 >
                   ✕ Clear
                 </button>
@@ -239,26 +239,26 @@ export default function DiscoverClient() {
 
             <div className="flex items-center justify-between px-2">
               <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-blue-400 animate-pulse"></span>
-                <h2 className="text-sm font-bold text-white uppercase tracking-tight">
+                <span className="flex h-2 w-2 rounded-full bg-brand-primary animate-pulse"></span>
+                <h2 className="text-sm font-bold text-text-primary uppercase tracking-tight">
                   {activeSearchQuery ? `Search results for "${activeSearchQuery}"` : "Live from Bluesky · Scored by Signal"}
                 </h2>
               </div>
-              <span className="text-[11px] font-medium text-white/60 hidden sm:block">Real posts, real authenticity check</span>
+              <span className="text-[11px] font-medium text-text-tertiary hidden sm:block">Real posts, real authenticity check</span>
             </div>
 
             {topicLoading && (
               <div className="space-y-4">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="glass-panel rounded-[32px] p-6 animate-pulse h-40" />
+                  <div key={i} className="glass-panel rounded-[32px] p-6 animate-pulse h-40 bg-surface-elevated" />
                 ))}
               </div>
             )}
 
             {!topicLoading && posts.length === 0 && (
-              <div className="bg-white/10 border border-white/20 rounded-[32px] p-20 text-center backdrop-blur-sm">
-                <p className="text-lg font-medium text-white">Filtering the open web...</p>
-                <p className="text-sm text-white/60">Curating verified signals for your feed.</p>
+              <div className="bg-surface-elevated border border-surface-border rounded-[32px] p-20 text-center shadow-sm">
+                <p className="text-lg font-medium text-text-primary">Filtering the open web...</p>
+                <p className="text-sm text-text-secondary">Curating verified signals for your feed.</p>
               </div>
             )}
 
@@ -267,55 +267,55 @@ export default function DiscoverClient() {
               return (
                 <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${Math.min(i * 50, 300)}ms`, animationFillMode: 'both' }}>
                   <TiltCard maxTilt={3}>
-                    <article className="glass-panel rounded-[32px] p-6 shadow-xl transition-all hover:translate-y-[-2px]">
+                    <article className="glass-panel p-6 shadow-sm transition-all border border-surface-border bg-surface-elevated rounded-3xl">
                       <div className="flex gap-3 items-center mb-4">
-                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-400 p-[2px]">
+                        <div className="w-11 h-11 rounded-full bg-brand-primary p-[2px]">
                           {post.authorImage ? (
-                            <img src={post.authorImage} className="w-full h-full rounded-full object-cover border-2 border-white" alt="" />
+                            <img src={post.authorImage} className="w-full h-full rounded-full object-cover border-2 border-surface-elevated" alt="" />
                           ) : (
-                            <div className="w-full h-full rounded-full bg-surface-secondary border-2 border-white" />
+                            <div className="w-full h-full rounded-full bg-surface-base border-2 border-surface-elevated" />
                           )}
                         </div>
                         <div>
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <h3 className="font-bold text-accent-green">{post.authorName}</h3>
-                            <BadgeCheck className="w-4 h-4 text-blue-500" />
+                            <h3 className="font-bold text-text-primary hover:text-brand-primary cursor-pointer">{post.authorName}</h3>
+                            <BadgeCheck className="w-4 h-4 text-brand-primary" />
                           </div>
-                          <p className="text-xs text-on-surface-variant">@{post.authorHandle}</p>
+                          <p className="text-xs text-text-secondary">@{post.authorHandle}</p>
                         </div>
-                        <div className={`ml-auto text-[10px] font-bold px-2 py-1 rounded-full ${scoreColorClass(post.humanScore)}`}>
+                        <div className={`ml-auto text-[10px] font-bold px-2 py-1 rounded-full border ${scoreColorClass(post.humanScore)}`}>
                           {post.humanScore}% AUTHENTIC
                         </div>
                       </div>
                       
                       <div className="mb-2">
-                        <span className="inline-block text-[10px] text-accent-green font-bold bg-accent-green/10 px-2 py-1 rounded-full uppercase tracking-widest">
+                        <span className="inline-block text-[10px] text-brand-primary font-bold bg-brand-primary/10 px-2 py-1 rounded-full uppercase tracking-widest border border-brand-primary/20">
                           {post.topicName}
                         </span>
                       </div>
                       
-                      <p className="text-on-surface leading-relaxed text-base mb-4">
+                      <p className="text-text-primary leading-relaxed text-base mb-4 font-normal">
                         {post.content}
                       </p>
 
-                      <div className="bg-accent-green/5 rounded-2xl p-4 mb-4 border-l-4 border-accent-green">
-                        <p className="text-[10px] font-bold text-accent-green uppercase tracking-widest mb-1">↳ Why you see this</p>
-                        <p className="text-xs text-on-surface-variant">
-                          Imported from Bluesky · matched topic <b>{post.topicName}</b> · authenticity score computed from content + engagement pattern
+                      <div className="bg-brand-primary/5 rounded-2xl p-4 mb-4 border-l-4 border-brand-primary">
+                        <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-1">↳ Why you see this</p>
+                        <p className="text-xs text-text-secondary">
+                          Imported from Bluesky · matched topic <b className="text-text-primary">{post.topicName}</b> · authenticity score computed from content + engagement pattern
                         </p>
                       </div>
 
-                      <div className="flex items-center justify-between text-on-surface-variant pt-4 border-t border-white/5">
+                      <div className="flex items-center justify-between text-text-secondary pt-4 border-t border-surface-border">
                         <div className="flex items-center space-x-6">
-                          <button className="flex items-center hover:text-accent-green transition-colors font-medium text-sm">
+                          <button className="flex items-center hover:text-brand-accent transition-colors font-medium text-sm">
                             <Heart className="w-4 h-4 mr-2" />
                             <span>{post.likeCount !== undefined ? post.likeCount : 124}</span>
                           </button>
-                          <button className="flex items-center hover:text-accent-green transition-colors font-medium text-sm">
+                          <button className="flex items-center hover:text-brand-primary transition-colors font-medium text-sm">
                             <MessageCircle className="w-4 h-4 mr-2" />
                             <span>{post.replyCount !== undefined ? post.replyCount : 18}</span>
                           </button>
-                          <button className="flex items-center hover:text-accent-green transition-colors font-medium text-sm">
+                          <button className="flex items-center hover:text-status-success transition-colors font-medium text-sm">
                             <Repeat className="w-4 h-4 mr-2" />
                             <span>{post.repostCount !== undefined ? post.repostCount : 5}</span>
                           </button>
@@ -323,13 +323,13 @@ export default function DiscoverClient() {
                         <button 
                           onClick={() => handleTrust(post.authorHandle, post.topicId)}
                           disabled={trustedHandles[key]}
-                          className={`flex items-center gap-2 text-xs px-3 py-1.5 rounded-full font-medium transition-all ml-auto ${
+                          className={`flex items-center gap-2 text-xs px-4 py-1.5 rounded-full font-bold transition-all ml-auto ${
                             trustedHandles[key]
-                              ? "bg-accent-green/20 text-accent-green"
-                              : "bg-black/5 hover:bg-accent-green/10 hover:text-accent-green"
+                              ? "bg-status-success/10 text-status-success border border-status-success/30 cursor-default"
+                              : "btn-primary px-4 py-1.5 shadow-sm"
                           }`}
                         >
-                          {trustedHandles[key] ? "✓ Trusted" : "Trust"}
+                          {trustedHandles[key] ? "✓ Trusted" : "Trust User"}
                         </button>
                       </div>
                     </article>
@@ -338,17 +338,6 @@ export default function DiscoverClient() {
               )
             })}
           </section>
-
-          <aside className="space-y-6 hidden lg:block sticky top-8">
-            <div className="dark-glass-panel rounded-[28px] p-6 text-accent-cream shadow-2xl">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-serif text-2xl tracking-wide">Discovery Flow</h2>
-              </div>
-              <p className="text-white/80 text-sm mb-6 leading-relaxed">
-                You are currently seeing high-trust signals from across the AT Protocol network.
-              </p>
-            </div>
-          </aside>
         </div>
       )}
 
@@ -356,30 +345,30 @@ export default function DiscoverClient() {
         <div className="max-w-3xl mx-auto space-y-6">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
-              <span className="flex h-2 w-2 rounded-full bg-blue-400 animate-pulse"></span>
-              <h2 className="text-sm font-bold text-white uppercase tracking-tight">Your Bluesky Network · Scored by Signal</h2>
+              <span className="flex h-2 w-2 rounded-full bg-brand-primary animate-pulse"></span>
+              <h2 className="text-sm font-bold text-text-primary uppercase tracking-tight">Your Bluesky Network · Scored by Signal</h2>
             </div>
-            <span className="text-[11px] font-medium text-white/60">People you follow, authenticity checked</span>
+            <span className="text-[11px] font-medium text-text-tertiary">People you follow, authenticity checked</span>
           </div>
 
           {!networkStatus.checked && !networkLoading && (
             <div className="space-y-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="glass-panel rounded-[32px] p-6 animate-pulse h-32" />
+                <div key={i} className="glass-panel rounded-[32px] p-6 animate-pulse h-32 bg-surface-elevated" />
               ))}
             </div>
           )}
 
           {networkStatus.checked && !networkStatus.connected && (
             <div className="glass-panel rounded-[32px] p-10 text-center flex flex-col items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-accent-green/10 flex items-center justify-center text-3xl">🦋</div>
+              <div className="w-16 h-16 rounded-full bg-brand-primary/10 flex items-center justify-center text-3xl">🦋</div>
               <div>
-                <p className="text-lg font-medium text-on-surface mb-2">Connect your Bluesky account</p>
-                <p className="text-sm text-on-surface-variant max-w-sm mx-auto">
+                <p className="text-lg font-bold text-text-primary mb-2">Connect your Bluesky account</p>
+                <p className="text-sm text-text-secondary max-w-sm mx-auto">
                   See your real feed from people you follow, scored by Signal for authenticity — no hidden algorithm.
                 </p>
               </div>
-              <a href="/connect" className="mt-2 text-sm px-6 py-3 rounded-full bg-accent-green text-white font-medium hover:bg-opacity-90 transition-all shadow-md">
+              <a href="/connect" className="mt-2 btn-primary text-sm px-6 py-3 rounded-full shadow-sm">
                 Connect Bluesky →
               </a>
             </div>
@@ -388,15 +377,15 @@ export default function DiscoverClient() {
           {networkStatus.connected && networkLoading && (
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className="glass-panel rounded-[32px] p-6 animate-pulse h-40" />
+                <div key={i} className="glass-panel rounded-[32px] p-6 animate-pulse h-40 bg-surface-elevated" />
               ))}
             </div>
           )}
 
           {networkStatus.connected && !networkLoading && networkError && networkPosts.length === 0 && (
-            <div className="glass-panel rounded-[32px] p-10 text-center">
-              <p className="text-sm text-on-surface-variant mb-4">{networkError}</p>
-              <a href="/connect" className="text-sm text-accent-green font-medium hover:underline">
+            <div className="glass-panel rounded-[32px] p-10 text-center border border-status-error/30 bg-status-error/5">
+              <p className="text-sm text-text-primary font-medium mb-4">{networkError}</p>
+              <a href="/connect" className="text-sm text-brand-secondary font-medium hover:underline">
                 Reconnect your Bluesky account →
               </a>
             </div>
@@ -404,8 +393,9 @@ export default function DiscoverClient() {
 
           {networkStatus.connected && !networkLoading && !networkError && networkPosts.length === 0 && (
             <div className="glass-panel rounded-[32px] p-10 text-center">
-              <p className="text-lg font-medium text-on-surface mb-2">No posts found</p>
-              <p className="text-sm text-on-surface-variant">
+              <div className="text-4xl mb-4 opacity-60">🍃</div>
+              <p className="text-lg font-bold text-text-primary mb-2">No posts found</p>
+              <p className="text-sm text-text-secondary">
                 Follow some accounts on Bluesky to see your feed here.
               </p>
             </div>
@@ -414,51 +404,51 @@ export default function DiscoverClient() {
           {networkStatus.connected && !networkLoading && networkPosts.map((post, i) => (
             <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${Math.min(i * 50, 300)}ms`, animationFillMode: 'both' }}>
               <TiltCard maxTilt={3}>
-                <article className="glass-panel rounded-[32px] p-6 shadow-xl transition-all hover:translate-y-[-2px]">
+                <article className="glass-panel p-6 shadow-sm transition-all">
                   {post.isRepost && post.repostedBy && (
-                    <p className="text-[10px] font-bold text-white/60 mb-3 px-1 uppercase tracking-widest">
+                    <p className="text-[10px] font-bold text-text-tertiary mb-3 px-1 uppercase tracking-widest bg-surface-base w-max rounded-md border border-surface-border">
                       🔁 Reposted by @{post.repostedBy}
                     </p>
                   )}
                   
                   <div className="flex gap-3 items-center mb-4">
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-400 p-[2px]">
+                    <div className="w-11 h-11 rounded-full bg-brand-primary p-[2px]">
                       {post.authorImage ? (
-                        <img src={post.authorImage} className="w-full h-full rounded-full object-cover border-2 border-white" alt="" />
+                        <img src={post.authorImage} className="w-full h-full rounded-full object-cover border-2 border-surface-elevated" alt="" />
                       ) : (
-                        <div className="w-full h-full rounded-full bg-surface-secondary border-2 border-white" />
+                        <div className="w-full h-full rounded-full bg-surface-base border-2 border-surface-elevated" />
                       )}
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <h3 className="font-bold text-accent-green">{post.authorName}</h3>
-                        <span className="text-xs text-on-surface-variant">@{post.authorHandle}</span>
-                        <span className="text-[10px] text-accent-green font-bold bg-accent-green/10 px-1.5 py-0.5 rounded-full uppercase tracking-tighter">via Bluesky</span>
+                        <h3 className="font-bold text-text-primary">{post.authorName}</h3>
+                        <span className="text-xs text-text-secondary">@{post.authorHandle}</span>
+                        <span className="text-[10px] text-brand-primary font-bold bg-brand-primary/10 px-1.5 py-0.5 rounded-full uppercase tracking-tighter border border-brand-primary/20">via Bluesky</span>
                       </div>
-                      <p className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-widest">Post Signal</p>
+                      <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-widest mt-0.5">Post Signal</p>
                     </div>
-                    <div className={`ml-auto text-[10px] font-bold px-2 py-1 rounded-full ${scoreColorClass(post.humanScore)}`}>
+                    <div className={`ml-auto text-[10px] font-bold px-2 py-1 rounded-full border ${scoreColorClass(post.humanScore)}`}>
                       {post.humanScore}% AUTHENTIC
                     </div>
                   </div>
 
-                  <p className="text-on-surface leading-relaxed text-base mb-4">
+                  <p className="text-text-primary leading-relaxed text-base mb-4 font-normal">
                     {post.content}
                   </p>
 
-                  <div className="bg-accent-green/5 rounded-2xl p-4 mb-4 border-l-4 border-accent-green">
-                    <p className="text-[10px] font-bold text-accent-green uppercase tracking-widest mb-1">↳ Why you see this</p>
-                    <p className="text-xs text-on-surface-variant">
-                      From your Bluesky network — you follow <b>@{post.authorHandle}</b>
+                  <div className="bg-brand-primary/5 rounded-2xl p-4 mb-4 border-l-4 border-brand-primary">
+                    <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-1">↳ Why you see this</p>
+                    <p className="text-xs text-text-secondary">
+                      From your Bluesky network — you follow <b className="text-text-primary">@{post.authorHandle}</b>
                       {post.isRepost ? " · shown as a repost" : ""} · authenticity score computed from content + engagement pattern
                     </p>
                   </div>
 
-                  <div className="flex items-center space-x-6 text-xs text-on-surface-variant pt-4 border-t border-white/5 w-full">
-                    <span className="flex items-center"><Heart className="w-4 h-4 mr-2" /> <span>{post.likeCount !== undefined ? post.likeCount : 124}</span></span>
-                    <span className="flex items-center"><Repeat className="w-4 h-4 mr-2" /> <span>{post.repostCount !== undefined ? post.repostCount : 5}</span></span>
-                    <span className="flex items-center"><MessageCircle className="w-4 h-4 mr-2" /> <span>{post.replyCount !== undefined ? post.replyCount : 18}</span></span>
-                    <a href={post.externalUrl} target="_blank" rel="noopener noreferrer" className="hover:text-accent-green font-medium ml-auto transition-colors">
+                  <div className="flex items-center space-x-6 text-xs text-text-secondary pt-4 border-t border-surface-border w-full">
+                    <span className="flex items-center hover:text-brand-accent cursor-pointer"><Heart className="w-4 h-4 mr-2" /> <span>{post.likeCount !== undefined ? post.likeCount : 124}</span></span>
+                    <span className="flex items-center hover:text-status-success cursor-pointer"><Repeat className="w-4 h-4 mr-2" /> <span>{post.repostCount !== undefined ? post.repostCount : 5}</span></span>
+                    <span className="flex items-center hover:text-brand-primary cursor-pointer"><MessageCircle className="w-4 h-4 mr-2" /> <span>{post.replyCount !== undefined ? post.replyCount : 18}</span></span>
+                    <a href={post.externalUrl} target="_blank" rel="noopener noreferrer" className="hover:text-text-primary font-medium ml-auto transition-colors flex items-center gap-1 bg-surface-base px-2 py-1 rounded border border-surface-border">
                       View on Bluesky ↗
                     </a>
                   </div>
