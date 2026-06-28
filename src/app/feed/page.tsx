@@ -12,7 +12,7 @@ export default async function FeedPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 overflow-y-auto pb-20 pt-20">
+      <main className="flex-1 pb-20 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 items-start justify-center">
           <div className="flex-1 w-full max-w-2xl mx-auto lg:mx-0 space-y-6">
             <FeedClient currentUserId={userId} />
