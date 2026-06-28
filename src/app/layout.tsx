@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${instrumentSerif.variable}`}>
-      <body className="min-h-screen bg-surface-base text-text-primary antialiased overflow-x-hidden selection:bg-brand-primary/30 selection:text-white">
+      <body className="min-h-screen bg-surface-base text-text-primary antialiased overflow-x-hidden selection:bg-brand-primary/20 selection:text-brand-primary">
         <div className="bg-mesh-gradient"></div>
         <div className="flex flex-col min-h-screen w-full relative z-0">
           <SessionProvider>
