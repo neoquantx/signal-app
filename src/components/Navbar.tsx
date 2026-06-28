@@ -30,19 +30,19 @@ export default function Navbar() {
     <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 px-4 sm:px-6 lg:px-8 ${scrolled ? 'py-3' : 'py-5'}`}>
       <div className={`max-w-6xl mx-auto flex items-center justify-between transition-all duration-300 ${
         scrolled 
-          ? 'glass-panel rounded-full px-6 py-2 shadow-lg' 
+          ? 'glass-panel px-6 py-2' 
           : 'bg-transparent px-2 py-2'
       }`}>
         {/* Logo */}
         <Link href="/feed" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center text-white font-serif text-xl shadow-lg group-hover:shadow-brand-primary/50 transition-all duration-300 transform group-hover:scale-105">
+          <div className="w-9 h-9 rounded-full bg-brand-primary flex items-center justify-center text-white font-serif text-xl shadow-sm group-hover:shadow-md transition-all duration-300 transform group-hover:scale-105">
             S
           </div>
-          <span className={`font-serif text-2xl tracking-wide transition-colors ${scrolled ? 'text-white' : 'gradient-text'}`}>Signal</span>
+          <span className="font-serif text-2xl tracking-wide text-text-primary">Signal</span>
         </Link>
 
         {/* Desktop nav links */}
-        <nav className="hidden md:flex items-center gap-1 bg-surface-glass border border-surface-border rounded-full p-1 shadow-inner">
+        <nav className="hidden md:flex items-center gap-1 bg-surface-elevated border border-surface-border rounded-full p-1 shadow-sm">
           {links.map((l) => {
             const Icon = l.icon
             const isActive = pathname === l.href
@@ -52,8 +52,8 @@ export default function Navbar() {
                 href={l.href}
                 className={`font-medium flex items-center gap-2 transition-all duration-300 px-5 py-2 rounded-full ${
                   isActive
-                    ? "bg-gradient-to-r from-brand-primary to-brand-accent text-white shadow-md"
-                    : "text-text-secondary hover:text-white hover:bg-surface-glass-hover"
+                    ? "bg-text-primary text-white"
+                    : "text-text-secondary hover:text-text-primary hover:bg-surface-glass-hover"
                 }`}
               >
                 <Icon className={isActive ? "w-4 h-4" : "w-4 h-4 opacity-70"} />
@@ -73,10 +73,10 @@ export default function Navbar() {
           </Link>
 
           {session?.user && (
-            <div className="relative hidden sm:block">
+            <div className="relative hidden md:block">
               <button
                 onClick={() => setMenuOpen((v) => !v)}
-                className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border border-surface-border bg-surface-glass hover:bg-surface-glass-hover transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/50"
+                className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border border-surface-border bg-surface-elevated hover:bg-surface-glass-hover transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 shadow-sm"
               >
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-brand-primary flex items-center justify-center text-white font-medium">
                   {session.user.image ? (
@@ -91,12 +91,12 @@ export default function Navbar() {
               {menuOpen && (
                 <>
                   <button className="fixed inset-0 z-40 cursor-default" onClick={() => setMenuOpen(false)} aria-label="Close menu" />
-                  <div className="absolute right-0 mt-3 w-56 glass-panel rounded-2xl shadow-2xl z-50 overflow-hidden text-white border border-surface-border/50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="px-4 py-4 border-b border-surface-border bg-surface-elevated/50">
-                      <p className="text-sm font-semibold truncate text-white">{session.user.name}</p>
+                  <div className="absolute right-0 mt-3 w-56 glass-panel z-50 overflow-hidden text-text-primary animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="px-4 py-4 border-b border-surface-border bg-surface-base">
+                      <p className="text-sm font-semibold truncate text-text-primary">{session.user.name}</p>
                       <p className="text-xs text-text-secondary truncate mt-0.5">{session.user.email}</p>
                     </div>
-                    <div className="p-2">
+                    <div className="p-2 bg-surface-elevated">
                       <button
                         onClick={() => signOut({ callbackUrl: "/login" })}
                         className="flex items-center gap-2 w-full text-left px-3 py-2.5 text-sm text-status-error hover:bg-status-error/10 rounded-xl transition-colors font-medium"
@@ -114,7 +114,7 @@ export default function Navbar() {
           <button
             aria-label="Toggle navigation menu"
             onClick={() => setMobileNavOpen((v) => !v)}
-            className="sm:hidden w-10 h-10 flex items-center justify-center text-white bg-surface-glass border border-surface-border hover:bg-surface-glass-hover rounded-full transition-colors"
+            className="md:hidden w-10 h-10 flex items-center justify-center text-text-primary bg-surface-elevated border border-surface-border hover:bg-surface-glass-hover rounded-full transition-colors shadow-sm"
           >
             {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -125,12 +125,12 @@ export default function Navbar() {
       {mobileNavOpen && (
         <>
           <button
-            className="fixed inset-0 z-40 cursor-default bg-black/60 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 z-40 cursor-default bg-black/20 backdrop-blur-sm transition-opacity md:hidden"
             onClick={() => setMobileNavOpen(false)}
             aria-label="Close navigation menu"
           />
-          <div className="absolute top-[80px] left-4 right-4 glass-panel rounded-3xl shadow-2xl z-50 p-2 flex flex-col sm:hidden border border-surface-border animate-in fade-in slide-in-from-top-4 duration-300">
-            <div className="flex flex-col gap-1 p-2">
+          <div className="absolute top-[80px] left-4 right-4 glass-panel z-50 p-2 flex flex-col md:hidden animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="flex flex-col gap-1 p-2 bg-surface-elevated rounded-t-2xl">
               {links.map((l) => {
                 const Icon = l.icon
                 const isActive = pathname === l.href
@@ -141,8 +141,8 @@ export default function Navbar() {
                     onClick={() => setMobileNavOpen(false)}
                     className={`px-4 py-3.5 text-base font-medium rounded-2xl transition-all duration-200 flex items-center gap-3 ${
                       isActive 
-                        ? "bg-gradient-to-r from-brand-primary to-brand-accent text-white shadow-md" 
-                        : "text-text-secondary hover:text-white hover:bg-surface-glass"
+                        ? "bg-text-primary text-white shadow-sm" 
+                        : "text-text-secondary hover:text-text-primary hover:bg-surface-glass-hover"
                     }`}
                   >
                     <Icon className="w-5 h-5" /> {l.label}
@@ -151,7 +151,7 @@ export default function Navbar() {
               })}
             </div>
             
-            <div className="px-4 py-3 mt-2 border-t border-surface-border">
+            <div className="px-4 py-3 mt-2 border-t border-surface-border bg-surface-elevated">
               <Link
                 href="/compose"
                 onClick={() => setMobileNavOpen(false)}
@@ -162,10 +162,10 @@ export default function Navbar() {
             </div>
             
             {session?.user && (
-              <div className="px-4 py-4 mt-2 border-t border-surface-border bg-surface-elevated/30 rounded-b-2xl">
+              <div className="px-4 py-4 mt-2 border-t border-surface-border bg-surface-base rounded-b-2xl">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center font-medium overflow-hidden shadow-lg">
+                    <div className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center font-medium overflow-hidden shadow-sm">
                       {session.user.image ? (
                         <img src={session.user.image} alt="avatar" className="w-full h-full object-cover" />
                       ) : (
@@ -173,7 +173,7 @@ export default function Navbar() {
                       )}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-white truncate max-w-[120px]">{session.user.name}</p>
+                      <p className="text-sm font-semibold text-text-primary truncate max-w-[120px]">{session.user.name}</p>
                       <p className="text-xs text-text-tertiary truncate max-w-[120px]">{session.user.email}</p>
                     </div>
                   </div>
