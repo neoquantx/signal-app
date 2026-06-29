@@ -16,7 +16,7 @@ Signal is a trust-native social platform where every post shows a Human Authenti
 - Google + GitHub login
 
 ## Tech Stack
-Next.js 14 (App Router), TypeScript, Tailwind CSS, NextAuth, Amazon DynamoDB, AWS Secrets Manager, Three.js, AT Protocol (@atproto/oauth-client-node, @atproto/api), Vercel.
+Next.js 16 (App Router), TypeScript, Tailwind CSS, NextAuth, Amazon DynamoDB, AWS Secrets Manager, Three.js, AT Protocol (@atproto/oauth-client-node, @atproto/api), Vercel.
 
 ## Prerequisites
 - Node.js 18+ and npm
