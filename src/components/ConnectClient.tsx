@@ -14,12 +14,12 @@ interface Platform {
 }
 
 const PLATFORMS: Platform[] = [
-  { id: "bluesky",   name: "Bluesky",     description: "Live posts, scored for authenticity in real time", color: "#1185FE", enabled: true  },
-  { id: "x",         name: "X (Twitter)", description: "Coming soon — API access is paid-only right now",  color: "#000000", enabled: false }, // Updated X color for light theme
-  { id: "instagram", name: "Instagram",   description: "Coming soon — requires platform app review",        color: "#E1306C", enabled: false },
-  { id: "threads",   name: "Threads",     description: "Coming soon",                                       color: "#000000", enabled: false }, // Updated Threads color for light theme
-  { id: "reddit",    name: "Reddit",      description: "Coming soon",                                       color: "#FF4500", enabled: false },
-  { id: "mastodon",  name: "Mastodon",    description: "Coming soon",                                       color: "#6364FF", enabled: false },
+  { id: "bluesky",   name: "Bluesky",                description: "Live posts, scored for authenticity in real time", color: "#1185FE", enabled: true  },
+  { id: "x",         name: "Microblogging",          description: "Coming soon — API access is paid-only right now",  color: "#000000", enabled: false }, // Updated X color for light theme
+  { id: "instagram", name: "Photo Sharing",          description: "Coming soon — requires platform app review",       color: "#E1306C", enabled: false },
+  { id: "threads",   name: "Threaded Conversations", description: "Coming soon",                                      color: "#000000", enabled: false }, // Updated Threads color for light theme
+  { id: "reddit",    name: "Community Forums",       description: "Coming soon",                                      color: "#FF4500", enabled: false },
+  { id: "mastodon",  name: "Federated Network",      description: "Coming soon",                                      color: "#6364FF", enabled: false },
 ]
 
 // ---------------------------------------------------------------------------
