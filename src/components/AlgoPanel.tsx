@@ -33,6 +33,7 @@ export default function AlgoPanel() {
     })
     setSaving(false)
     setSaved(true)
+    window.dispatchEvent(new Event("algo-updated"))
     setTimeout(() => setSaved(false), 2000)
   }
 
