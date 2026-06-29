@@ -24,6 +24,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getUserBlueskyAgent } from "@/lib/bluesky-oauth";
 import { computeContentHeuristicScore } from "@/lib/bluesky";
+import { getItem } from "@/lib/dynamo";
 
 export const runtime = "nodejs";
 
@@ -63,8 +64,14 @@ export async function GET() {
   }
 
   try {
-    // 3. Fetch the real following timeline (limit 25)
-    const timelineRes = await agent.getTimeline({ limit: 25 });
+    // 3. Fetch the real following timeline (limit 25) and user's algorithm prefs
+    const [timelineRes, algoItem] = await Promise.all([
+      agent.getTimeline({ limit: 25 }),
+      getItem(`USER#${signalUserId}`, "ALGO")
+    ]);
+
+    const prefs = algoItem ?? { trustChainWeight: 65, topicRelevanceWeight: 25, recencyWeight: 10 };
+    const now = Date.now();
 
     // timelineRes.data.feed is FeedViewPost[]
     const feedItems = timelineRes.data.feed ?? [];
@@ -135,7 +142,21 @@ export async function GET() {
         };
       })
       // Skip items with no text content (e.g. pure image/video posts or deleted posts)
-      .filter(p => p.content.trim().length > 0);
+      .filter(p => p.content.trim().length > 0)
+      .map(post => {
+        const trustScore = post.humanScore ?? 50;
+        const topicScore = 100; // Assume fully relevant for timeline
+        const hoursOld = (now - new Date(post.createdAt).getTime()) / (1000 * 60 * 60);
+        const recencyScore = Math.max(0, 100 - hoursOld * (100 / 48)); // Decays over 48h
+
+        const finalScore = 
+          (trustScore * (prefs.trustChainWeight / 100)) + 
+          (topicScore * (prefs.topicRelevanceWeight / 100)) + 
+          (recencyScore * (prefs.recencyWeight / 100));
+
+        return { ...post, _algoScore: finalScore };
+      })
+      .sort((a, b) => b._algoScore - a._algoScore);
 
     return NextResponse.json({ posts, connected: true });
   } catch (err) {
