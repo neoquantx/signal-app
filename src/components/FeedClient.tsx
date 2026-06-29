@@ -93,6 +93,18 @@ export default function FeedClient({ currentUserId }: { currentUserId: string })
     }
   }, [activeTab, fetchFollowingPosts])
 
+  useEffect(() => {
+    const handleAlgoUpdate = () => {
+      if (activeTab === "foryou") {
+        fetchForyouPosts()
+      } else {
+        fetchFollowingPosts()
+      }
+    }
+    window.addEventListener("algo-updated", handleAlgoUpdate)
+    return () => window.removeEventListener("algo-updated", handleAlgoUpdate)
+  }, [activeTab, fetchForyouPosts, fetchFollowingPosts])
+
   const postsDependency = activeTab === "foryou" ? foryouPosts : followingPosts
 
   useEffect(() => {
