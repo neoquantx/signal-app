@@ -119,8 +119,8 @@ export async function GET(request: NextRequest) {
       linkedAt: new Date().toISOString(),
     });
 
-    // 6. Redirect to the feed page (success state)
-    return NextResponse.redirect(new URL("/feed", request.url));
+    // 6. Redirect to the connect page with success state
+    return NextResponse.redirect(new URL("/connect?success=true", request.url));
   } catch (err) {
     console.error("[bluesky-oauth] callback exchange error:", err);
     return NextResponse.redirect(

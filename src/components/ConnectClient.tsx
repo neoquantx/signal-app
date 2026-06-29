@@ -61,7 +61,7 @@ export default function ConnectClient() {
       .then(r => r.json())
       .then((d: BlueskyStatus) => {
         setBskyStatus(d)
-        if (d.connected) {
+        if (d.connected && searchParams.get("success") === "true") {
           setIsRedirecting(true)
           setTimeout(() => {
             router.push("/feed")
@@ -69,7 +69,7 @@ export default function ConnectClient() {
         }
       })
       .catch(() => setBskyStatus({ connected: false }))
-  }, [router])
+  }, [router, searchParams])
 
   // ---- Load other platforms' cosmetic state on mount ----
   useEffect(() => {
